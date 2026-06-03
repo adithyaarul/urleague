@@ -3082,7 +3082,7 @@ body::after {
   66%  { opacity: .95; transform: scale(.97) translateY(8px); }
   100% { opacity: 1; transform: scale(1.02) translateY(-6px); }
 }
-body > *:not(.motm-overlay):not(.mots-overlay):not(.msummary-overlay):not(.modal-overlay):not(.more-overlay):not(.viewer-overlay):not(.toast):not(.ach-sheet-overlay):not(.room-entry-overlay):not(.room-overlay):not(.room-setup-modal-overlay):not(#room-status-pill):not(#section-room) { position: relative; z-index: 1; }
+body > *:not(.motm-overlay):not(.mots-overlay):not(.msummary-overlay):not(.modal-overlay):not(.more-overlay):not(.viewer-overlay):not(.toast):not(.ach-sheet-overlay):not(.room-entry-overlay):not(.room-overlay):not(.room-setup-modal-overlay):not(#room-status-pill) { position: relative; z-index: 1; }
 
 /* ── Header glass ── */
 header {
@@ -3582,8 +3582,7 @@ input:focus, select:focus, textarea:focus {
 @keyframes dotBlink{0%,100%{opacity:1;}50%{opacity:.3;}}
 
 /* ── Room section ── */
-#section-room{ display:none !important; pointer-events:none !important; }
-#section-room.active{ display:block !important; pointer-events:all !important; padding:16px 14px 100px; }
+
 
 /* ── Room overlay (create/join modal) ── */
 .room-overlay{
@@ -4707,16 +4706,7 @@ input:focus, select:focus, textarea:focus {
   </div>
 </div>
 
-<!-- ═══ ROOM SECTION ═══ -->
-<div class="section" id="section-room">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;"><i class="ti ti-users" style="color:var(--sport-primary);margin-right:6px;"></i>Room</div>
-    <button onclick="renderRoomSection()" style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;"><i class="ti ti-refresh"></i> Refresh</button>
-  </div>
-  <div id="room-section-body">
-    <!-- filled by renderRoomSection() -->
-  </div>
-</div>
+<!-- Room section removed — room opens as overlay -->
 
 <!-- ═══ MATCH SUMMARY MODAL ═══ -->
 <div class="msummary-overlay" id="msummary-overlay" onclick="closeSummary(event)">
@@ -5972,8 +5962,11 @@ function navigateMore(section) {
     openRoomLobby();
     return;
   }
+  // Only navigate to sections that exist in the DOM
+  const sectionEl = document.getElementById('section-' + section);
+  if (!sectionEl) return;
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('section-' + section).classList.add('active');
+  sectionEl.classList.add('active');
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   if (section === 'profiles') { renderLibrary(); renderProfiles(); }
 }
