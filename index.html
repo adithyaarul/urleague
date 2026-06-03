@@ -5972,8 +5972,15 @@ function navigateMore(section) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   if (section === 'profiles') { renderLibrary(); renderProfiles(); }
   if (section === 'room') {
-    // Don't navigate to a section — open the Room Lobby overlay directly
+    // Don't hide sections — just open the Room Lobby overlay on top
+    // Restore whichever section was active before
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    // Re-activate the match section so sport buttons still work after closing lobby
+    const lastActive = document.getElementById('section-match') || document.querySelector('.section');
+    if (lastActive) lastActive.classList.add('active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const matchTab = document.getElementById('tab-match') || document.querySelector('.tab');
+    if (matchTab) matchTab.classList.add('active');
     openRoomLobby();
     return;
   }
