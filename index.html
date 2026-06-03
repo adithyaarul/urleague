@@ -3082,7 +3082,7 @@ body::after {
   66%  { opacity: .95; transform: scale(.97) translateY(8px); }
   100% { opacity: 1; transform: scale(1.02) translateY(-6px); }
 }
-body > *:not(.motm-overlay):not(.mots-overlay):not(.msummary-overlay):not(.modal-overlay):not(.more-overlay):not(.viewer-overlay):not(.toast):not(.ach-sheet-overlay):not(.room-entry-overlay):not(.room-overlay):not(.room-setup-modal-overlay):not(#room-status-pill) { position: relative; z-index: 1; }
+body > *:not(.motm-overlay):not(.mots-overlay):not(.msummary-overlay):not(.modal-overlay):not(.more-overlay):not(.viewer-overlay):not(.toast):not(.ach-sheet-overlay):not(.room-entry-overlay):not(.room-overlay):not(.room-setup-modal-overlay):not(#room-status-pill):not(#section-room) { position: relative; z-index: 1; }
 
 /* ── Header glass ── */
 header {
@@ -3582,8 +3582,8 @@ input:focus, select:focus, textarea:focus {
 @keyframes dotBlink{0%,100%{opacity:1;}50%{opacity:.3;}}
 
 /* ── Room section ── */
-#section-room{ display:none; }
-#section-room.active{ display:block; padding:16px 14px 100px; }
+#section-room{ display:none !important; pointer-events:none !important; }
+#section-room.active{ display:block !important; pointer-events:all !important; padding:16px 14px 100px; }
 
 /* ── Room overlay (create/join modal) ── */
 .room-overlay{
