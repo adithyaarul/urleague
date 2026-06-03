@@ -3583,7 +3583,7 @@ input:focus, select:focus, textarea:focus {
 
 /* ── Room section ── */
 #section-room{ display:none; }
-#section-room.active{ display:block; }
+#section-room.active{ display:block; padding:16px 14px 100px; }
 
 /* ── Room overlay (create/join modal) ── */
 .room-overlay{
@@ -4708,7 +4708,7 @@ input:focus, select:focus, textarea:focus {
 </div>
 
 <!-- ═══ ROOM SECTION ═══ -->
-<div class="section" id="section-room" style="padding:16px 14px 100px;">
+<div class="section" id="section-room">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;"><i class="ti ti-users" style="color:var(--sport-primary);margin-right:6px;"></i>Room</div>
     <button onclick="renderRoomSection()" style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;"><i class="ti ti-refresh"></i> Refresh</button>
