@@ -11757,6 +11757,15 @@ function subscribeToRoom(roomId) {
       leaveRoom(true);
       toast('Room was deleted by the host.');
     })
+    .on('broadcast', { event: 'member_kicked' }, (msg) => {
+      if (msg.payload.kickedUserId === _roomState.userId) {
+        leaveRoom(true);
+        toast('⛔ You have been removed from the room by the host.');
+      } else {
+        // Refresh member list for everyone else
+        loadRoomMembers();
+      }
+    })
     .subscribe(async (status) => {
       if (status === 'SUBSCRIBED') {
         setConnStatus('connected');
@@ -11864,6 +11873,25 @@ async function changeRole(targetUserId, newRole) {
     .eq('room_id', _roomState.roomId).eq('user_id', targetUserId);
   loadRoomMembers();
   toast(`Role updated to ${newRole}`);
+}
+
+// ── Kick member ──
+async function kickMember(targetUserId, targetName) {
+  if (_roomState.role !== 'host') { toast('Only the host can remove members.'); return; }
+  if (targetUserId === _roomState.userId) { toast("You can't kick yourself."); return; }
+  if (!confirm(`Remove "${targetName}" from the room?`)) return;
+  const { error } = await _sb.from('room_members')
+    .delete()
+    .eq('room_id', _roomState.roomId)
+    .eq('user_id', targetUserId);
+  if (error) { toast('Failed to remove member.'); return; }
+  // Broadcast kick so the removed user's device reacts immediately
+  _roomChannel?.send({
+    type: 'broadcast', event: 'member_kicked',
+    payload: { kickedUserId: targetUserId }
+  });
+  loadRoomMembers();
+  toast(`✅ ${targetName} has been removed from the room.`);
 }
 
 // ── Lock/Unlock scoring ──
@@ -12118,7 +12146,12 @@ function renderMemberList() {
           style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:10px;padding:2px 4px;cursor:pointer;">
           <option value="scorer" ${m.role==='scorer'?'selected':''}>Scorer</option>
           <option value="viewer" ${m.role==='viewer'?'selected':''}>Viewer</option>
-        </select>` : ''}
+        </select>
+        <button onclick="kickMember('${m.userId}','${esc(m.name)}')"
+          title="Remove from room"
+          style="background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.35);color:#f87171;border-radius:8px;padding:3px 7px;font-size:11px;cursor:pointer;line-height:1;flex-shrink:0;">
+          <i class="ti ti-user-x"></i>
+        </button>` : ''}
       <div class="${m.online ? 'room-member-online' : 'room-member-offline'}" title="${m.online?'Online':'Offline'}"></div>
     </div>`).join('');
 }
