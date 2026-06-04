@@ -5490,14 +5490,30 @@ function toggleMode() {
 }
 
 function applyMode() {
-  const isScorer = S.mode === 'scorer';
-  const badge = document.getElementById('mode-badge');
-  if (badge) {
-    badge.innerHTML = isScorer ? '<i class="ti ti-pencil"></i> Scorer' : '<i class="ti ti-eye"></i> Viewer';
-    badge.className = `mode-badge ${isScorer ? 'mode-scorer' : 'mode-viewer'}`;
+  // In a room, show actual room role (host/scorer/viewer); outside, show solo mode
+  let label, isScorer;
+  if (_roomState && _roomState.active) {
+    const role = _roomState.role || 'viewer';
+    isScorer = role === 'host' || role === 'scorer';
+    const roleIcons = { host: 'ti-crown', scorer: 'ti-pencil', viewer: 'ti-eye' };
+    const icon = roleIcons[role] || 'ti-eye';
+    label = role.charAt(0).toUpperCase() + role.slice(1);
+    const badge = document.getElementById('mode-badge');
+    if (badge) {
+      badge.innerHTML = `<i class="ti ${icon}"></i> ${label}`;
+      badge.className = `mode-badge ${isScorer ? 'mode-scorer' : 'mode-viewer'}`;
+    }
+  } else {
+    isScorer = S.mode === 'scorer';
+    const badge = document.getElementById('mode-badge');
+    if (badge) {
+      badge.innerHTML = isScorer ? '<i class="ti ti-pencil"></i> Scorer' : '<i class="ti ti-eye"></i> Viewer';
+      badge.className = `mode-badge ${isScorer ? 'mode-scorer' : 'mode-viewer'}`;
+    }
+    label = isScorer ? 'Scorer' : 'Viewer';
   }
   const lbl = document.getElementById('settings-mode-label');
-  if (lbl) lbl.textContent = `Currently: ${isScorer ? 'Scorer' : 'Viewer'}`;
+  if (lbl) lbl.textContent = `Currently: ${label}`;
 
   const vOverlay = document.getElementById('viewer-overlay');
   if (vOverlay) vOverlay.classList.toggle('hidden', isScorer);
@@ -11639,6 +11655,7 @@ async function createRoom() {
 
     subscribeToRoom(room.id);
     logActivity('room_created');
+    applyMode();
     renderRoomCreated(code, room.id);
     updateRoomPill();
   } catch(e) {
@@ -11693,6 +11710,7 @@ async function joinRoom() {
 
     subscribeToRoom(room.id);
     logActivity('member_joined');
+    applyMode();
     renderRoomLobby();
     updateRoomPill();
     toast(`Joined room as ${_roomState.role}`);
@@ -11728,7 +11746,13 @@ function subscribeToRoom(roomId) {
     .on('postgres_changes', {
       event: '*', schema: 'public', table: 'room_members',
       filter: `room_id=eq.${roomId}`
-    }, () => {
+    }, async (payload) => {
+      // If our own row was updated (role change by host), refresh badge
+      if (payload.new && payload.new.user_id === _roomState.userId && payload.new.role) {
+        _roomState.role = payload.new.role;
+        applyMode();
+        toast(`Your role was changed to ${payload.new.role} by the host.`);
+      }
       loadRoomMembers();
     })
     // Room state changes (match lifecycle)
@@ -11881,6 +11905,11 @@ async function changeRole(targetUserId, newRole) {
   if (!roomCan('room.manage')) return;
   await _sb.from('room_members').update({ role: newRole })
     .eq('room_id', _roomState.roomId).eq('user_id', targetUserId);
+  // If host changed their own role (edge case) or this user's role, update badge
+  if (targetUserId === _roomState.userId) {
+    _roomState.role = newRole;
+    applyMode();
+  }
   loadRoomMembers();
   toast(`Role updated to ${newRole}`);
 }
@@ -11943,6 +11972,7 @@ function leaveRoom(kicked = false) {
   _roomState = { active:false, roomId:null, roomCode:null, role:null, userId:null,
     userName:null, members:[], matchState:null, version:0, auditLog:[], lobbyOpen:false };
   updateRoomPill();
+  applyMode();
   closeRoomOverlay();
   document.getElementById('room-lock-banner').style.display = 'none';
   document.getElementById('room-connection-bar').className = '';
