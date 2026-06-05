@@ -70,6 +70,20 @@
   --badminton-glow:rgba(250,204,21,.2);
   --badminton-border:rgba(250,204,21,.32);
 
+  /* === PICKLEBALL === */
+  --pickleball-primary:#34d399;
+  --pickleball-pl:rgba(52,211,153,.12);
+  --pickleball-pm:rgba(52,211,153,.26);
+  --pickleball-glow:rgba(52,211,153,.2);
+  --pickleball-border:rgba(52,211,153,.32);
+
+  /* === CHESS === */
+  --chess-primary:#c084fc;
+  --chess-pl:rgba(192,132,252,.12);
+  --chess-pm:rgba(192,132,252,.26);
+  --chess-glow:rgba(192,132,252,.2);
+  --chess-border:rgba(192,132,252,.32);
+
   --radius-sm:10px;--radius-md:14px;--radius-lg:22px;--radius-xl:28px;
 }
 
@@ -117,6 +131,22 @@
   --sport-glow:var(--badminton-glow);
   --sport-border:var(--badminton-border);
   --sport-gradient:linear-gradient(135deg,rgba(250,204,21,.16),rgba(161,98,7,.12));
+}
+[data-sport="pickleball"]{
+  --sport-primary:var(--pickleball-primary);
+  --sport-primary-l:var(--pickleball-pl);
+  --sport-primary-m:var(--pickleball-pm);
+  --sport-glow:var(--pickleball-glow);
+  --sport-border:var(--pickleball-border);
+  --sport-gradient:linear-gradient(135deg,rgba(52,211,153,.18),rgba(6,95,70,.12));
+}
+[data-sport="chess"]{
+  --sport-primary:var(--chess-primary);
+  --sport-primary-l:var(--chess-pl);
+  --sport-primary-m:var(--chess-pm);
+  --sport-glow:var(--chess-glow);
+  --sport-border:var(--chess-border);
+  --sport-gradient:linear-gradient(135deg,rgba(192,132,252,.18),rgba(88,28,135,.12));
 }
 
 /* ═══════════════════════════════════════
@@ -285,10 +315,14 @@ header{
 }
 .gateway-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:20px;
-  max-width:900px;
+  grid-template-columns:repeat(5,1fr);
+  gap:16px;
+  max-width:1100px;
   margin:0 auto;
+}
+/* On medium screens, show 3+2 */
+@media(max-width:900px){
+  .gateway-grid{grid-template-columns:repeat(3,1fr);gap:14px;}
 }
 .sport-card{
   position:relative;overflow:hidden;
@@ -317,10 +351,14 @@ header{
 .sport-card-cricket::before{background:radial-gradient(ellipse at 50% 0%,rgba(239,68,68,.35) 0%,transparent 70%);}
 .sport-card-football::before{background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,.32) 0%,transparent 70%);}
 .sport-card-badminton::before{background:radial-gradient(ellipse at 50% 0%,rgba(250,204,21,.3) 0%,transparent 70%);}
+.sport-card-pickleball::before{background:radial-gradient(ellipse at 50% 0%,rgba(52,211,153,.3) 0%,transparent 70%);}
+.sport-card-chess::before{background:radial-gradient(ellipse at 50% 0%,rgba(192,132,252,.3) 0%,transparent 70%);}
 .sport-card:hover::before{opacity:1;}
 .sport-card:hover.sport-card-cricket{border-color:var(--cricket-border);box-shadow:0 0 0 1px var(--cricket-border),0 28px 80px var(--cricket-glow);}
 .sport-card:hover.sport-card-football{border-color:var(--football-border);box-shadow:0 0 0 1px var(--football-border),0 28px 80px var(--football-glow);}
 .sport-card:hover.sport-card-badminton{border-color:var(--badminton-border);box-shadow:0 0 0 1px var(--badminton-border),0 28px 80px var(--badminton-glow);}
+.sport-card:hover.sport-card-pickleball{border-color:var(--pickleball-border);box-shadow:0 0 0 1px var(--pickleball-border),0 28px 80px var(--pickleball-glow);}
+.sport-card:hover.sport-card-chess{border-color:var(--chess-border);box-shadow:0 0 0 1px var(--chess-border),0 28px 80px var(--chess-glow);}
 .sport-card-icon{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-65%);
@@ -333,6 +371,8 @@ header{
 .sport-card-cricket .sport-card-icon{color:var(--cricket-primary);}
 .sport-card-football .sport-card-icon{color:var(--football-primary);}
 .sport-card-badminton .sport-card-icon{color:var(--badminton-primary);}
+.sport-card-pickleball .sport-card-icon{color:var(--pickleball-primary);}
+.sport-card-chess .sport-card-icon{color:var(--chess-primary);}
 .sport-card-body{position:relative;z-index:1;text-align:center;width:100%;}
 .sport-card-label{
   font-family:'Barlow Condensed',sans-serif;
@@ -343,6 +383,8 @@ header{
 .sport-card-cricket .sport-card-label{color:var(--cricket-primary);}
 .sport-card-football .sport-card-label{color:var(--football-primary);}
 .sport-card-badminton .sport-card-label{color:var(--badminton-primary);}
+.sport-card-pickleball .sport-card-label{color:var(--pickleball-primary);}
+.sport-card-chess .sport-card-label{color:var(--chess-primary);}
 .sport-card-desc{font-size:12px;color:var(--text2);line-height:1.4;}
 .sport-card-cta{
   margin-top:16px;
@@ -355,10 +397,14 @@ header{
 .sport-card-cricket .sport-card-cta{color:var(--cricket-primary);}
 .sport-card-football .sport-card-cta{color:var(--football-primary);}
 .sport-card-badminton .sport-card-cta{color:var(--badminton-primary);}
+.sport-card-pickleball .sport-card-cta{color:var(--pickleball-primary);}
+.sport-card-chess .sport-card-cta{color:var(--chess-primary);}
 .sport-card:hover .sport-card-cricket .sport-card-cta,
 .sport-card-cricket:hover .sport-card-cta{background:rgba(239,68,68,.14);}
 .sport-card-football:hover .sport-card-cta{background:rgba(34,197,94,.14);}
 .sport-card-badminton:hover .sport-card-cta{background:rgba(250,204,21,.14);}
+.sport-card-pickleball:hover .sport-card-cta{background:rgba(52,211,153,.14);}
+.sport-card-chess:hover .sport-card-cta{background:rgba(192,132,252,.14);}
 /* Glowing dot */
 .sport-card-dot{
   position:absolute;top:20px;right:20px;width:10px;height:10px;
@@ -368,6 +414,8 @@ header{
 .sport-card-cricket .sport-card-dot{background:var(--cricket-primary);box-shadow:0 0 12px var(--cricket-glow);}
 .sport-card-football .sport-card-dot{background:var(--football-primary);box-shadow:0 0 12px var(--football-glow);}
 .sport-card-badminton .sport-card-dot{background:var(--badminton-primary);box-shadow:0 0 12px var(--badminton-glow);}
+.sport-card-pickleball .sport-card-dot{background:var(--pickleball-primary);box-shadow:0 0 12px var(--pickleball-glow);}
+.sport-card-chess .sport-card-dot{background:var(--chess-primary);box-shadow:0 0 12px var(--chess-glow);}
 @keyframes pulseGlow{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.35);}}
 
 /* ═══════════════════════════════════════
@@ -1681,6 +1729,101 @@ select option{background:var(--surface-2);color:var(--text);}
 }
 
 /* ═══════════════════════════════════════
+   PICKLEBALL
+═══════════════════════════════════════ */
+.pb-game-chip{
+  padding:3px 10px;border-radius:999px;
+  font-size:11px;font-weight:800;
+  background:var(--surface-2);border:1px solid var(--border);color:var(--text2);
+}
+.pb-game-chip.active{background:var(--pickleball-pl,rgba(52,211,153,.12));border-color:var(--pickleball-border,rgba(52,211,153,.32));color:var(--pickleball-primary,#34d399);}
+.pb-game-chip.won{background:var(--green-l);border-color:var(--green-m);color:var(--green);}
+.pb-server-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pickleball-primary,#34d399);box-shadow:0 0 8px var(--pickleball-glow,rgba(52,211,153,.2));margin-right:4px;animation:servePulse 1.2s ease-in-out infinite;}
+@keyframes servePulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* ═══════════════════════════════════════
+   CHESS
+═══════════════════════════════════════ */
+.ch-player-bar{
+  display:flex;align-items:center;gap:10px;padding:8px 4px;
+  border-radius:10px;transition:background .25s;
+}
+.ch-player-bar.active-turn{background:rgba(192,132,252,.08);border:1px solid rgba(192,132,252,.2);border-radius:12px;}
+.ch-player-avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:grid;place-items:center;font-size:18px;
+  flex-shrink:0;
+}
+.ch-player-avatar.ch-white{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.3);}
+.ch-player-avatar.ch-black{background:rgba(0,0,0,.4);color:var(--chess-primary,#c084fc);border:2px solid rgba(192,132,252,.3);}
+.ch-player-name{font-size:13px;font-weight:800;color:var(--text);}
+.ch-material{font-size:11px;color:var(--text3);min-height:14px;word-break:break-all;}
+.ch-clock{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1.7rem;font-weight:900;letter-spacing:.04em;
+  color:var(--text);min-width:70px;text-align:right;flex-shrink:0;
+  transition:color .3s;
+}
+.ch-clock.low-time{color:#f87171;animation:clockPulse .5s ease-in-out infinite;}
+.ch-clock.active{color:var(--chess-primary,#c084fc);}
+@keyframes clockPulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+.ch-board-wrap{
+  position:relative;width:100%;
+  aspect-ratio:1;
+  border-radius:8px;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  margin:8px 0;
+  touch-action:none;
+}
+#ch-board{width:100%;height:100%;display:block;}
+#ch-board-overlay{position:absolute;inset:0;pointer-events:none;}
+.ch-move-log{
+  display:grid;grid-template-columns:24px 1fr 1fr;gap:2px 8px;
+  max-height:180px;overflow-y:auto;font-size:12px;
+  scrollbar-width:thin;
+}
+.ch-move-num{color:var(--text3);font-weight:800;padding:3px 0;font-size:11px;text-align:right;}
+.ch-move-cell{
+  padding:3px 8px;border-radius:6px;cursor:pointer;font-weight:700;
+  transition:background .15s;font-family:'Barlow Condensed',sans-serif;font-size:13px;
+  color:var(--text2);
+}
+.ch-move-cell:hover{background:var(--surface-2);}
+.ch-move-cell.latest{background:var(--chess-pl,rgba(192,132,252,.12));color:var(--chess-primary,#c084fc);}
+.ch-move-cell.special{color:var(--amber);}
+.ch-cap-list{display:flex;flex-wrap:wrap;gap:3px;min-height:20px;font-size:16px;line-height:1;}
+.ch-result-score{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:3rem;font-weight:900;color:var(--chess-primary,#c084fc);
+  text-shadow:0 0 30px rgba(192,132,252,.5);
+}
+.ch-promotion-picker{
+  display:flex;gap:8px;justify-content:center;padding:12px;
+  background:var(--surface-2);border-radius:12px;border:1px solid var(--border);
+  margin-top:8px;
+}
+.ch-promotion-btn{
+  font-size:2rem;padding:8px 14px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface);cursor:pointer;transition:all .15s;
+}
+.ch-promotion-btn:hover{background:var(--chess-pl,rgba(192,132,252,.12));border-color:var(--chess-border,rgba(192,132,252,.32));}
+.ch-coord-label{
+  position:absolute;font-size:9px;font-weight:700;
+  color:rgba(255,255,255,.4);pointer-events:none;
+  font-family:'Barlow Condensed',sans-serif;
+}
+
+/* Pickleball overrides — reuses bd- classes but with pickleball color */
+[data-sport="pickleball"] .bd-score-btn.add{background:rgba(52,211,153,.2);color:var(--pickleball-primary,#34d399);}
+[data-sport="pickleball"] .bd-score-btn.add:hover{background:rgba(52,211,153,.32);}
+[data-sport="pickleball"] .bd-player.serving{border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.07);}
+[data-sport="pickleball"] .bd-player.serving .bd-score{color:var(--pickleball-primary,#34d399);text-shadow:0 0 20px rgba(52,211,153,.35);}
+[data-sport="pickleball"] .bd-separator .bd-sep-text{color:var(--text3);}
+
+/* Responsive chess board canvas */
+.ch-board-wrap canvas{touch-action:none;display:block;}
+
+/* ═══════════════════════════════════════
    HISTORY
 ═══════════════════════════════════════ */
 .history-item{
@@ -1695,6 +1838,8 @@ select option{background:var(--surface-2);color:var(--text);}
 .history-sport-dot.cricket{background:var(--cricket-primary);box-shadow:0 0 8px var(--cricket-glow);}
 .history-sport-dot.football{background:var(--football-primary);box-shadow:0 0 8px var(--football-glow);}
 .history-sport-dot.badminton{background:var(--badminton-primary);box-shadow:0 0 8px var(--badminton-glow);}
+.history-sport-dot.pickleball{background:var(--pickleball-primary,#34d399);box-shadow:0 0 8px var(--pickleball-glow,rgba(52,211,153,.2));}
+.history-sport-dot.chess{background:var(--chess-primary,#c084fc);box-shadow:0 0 8px var(--chess-glow,rgba(192,132,252,.2));}
 .history-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
 .history-title{font-size:13px;font-weight:800;white-space:normal;word-break:break-word;line-height:1.3;}
 .history-meta{font-size:10px;color:var(--text3);}
@@ -1926,8 +2071,8 @@ select option{background:var(--surface-2);color:var(--text);}
   .score-btns{grid-template-columns:repeat(4,1fr);}
   .fb-goal-section{gap:8px;}
   .bd-score{font-size:4.5rem;}
-  .gateway-grid{grid-template-columns:1fr;}
-  .sport-card{aspect-ratio:2.2;}
+  .gateway-grid{grid-template-columns:repeat(2,1fr);}
+  .sport-card{aspect-ratio:1.1;}
   .sport-card-icon{font-size:52px;transform:translate(-50%,-60%);}
   /* Better touch targets on small phones */
   .score-btn{min-height:58px;}
@@ -2103,6 +2248,8 @@ select option{background:var(--surface-2);color:var(--text);}
 .sport-card:nth-child(1){animation:cardIn .5s .05s both cubic-bezier(.34,1.56,.64,1);}
 .sport-card:nth-child(2){animation:cardIn .5s .15s both cubic-bezier(.34,1.56,.64,1);}
 .sport-card:nth-child(3){animation:cardIn .5s .25s both cubic-bezier(.34,1.56,.64,1);}
+.sport-card:nth-child(4){animation:cardIn .5s .32s both cubic-bezier(.34,1.56,.64,1);}
+.sport-card:nth-child(5){animation:cardIn .5s .39s both cubic-bezier(.34,1.56,.64,1);}
 
 /* ═══════════════════════════════════════
    SHIMMER EFFECT FOR LIVE BADGE
@@ -4331,6 +4478,28 @@ input:focus, select:focus, textarea:focus {
         <div class="sport-card-cta"><i class="ti ti-arrow-right"></i> Enter Arena</div>
       </div>
     </div>
+
+    <!-- PICKLEBALL -->
+    <div class="sport-card sport-card-pickleball" onclick="selectSport('pickleball')">
+      <div class="sport-card-dot"></div>
+      <div class="sport-card-icon"><i class="ti ti-tennis"></i></div>
+      <div class="sport-card-body">
+        <div class="sport-card-label">Pickleball</div>
+        <div class="sport-card-desc">Rally scoring, kitchen faults, serve rules — full dink-to-smash tracking.</div>
+        <div class="sport-card-cta"><i class="ti ti-arrow-right"></i> Enter Arena</div>
+      </div>
+    </div>
+
+    <!-- CHESS -->
+    <div class="sport-card sport-card-chess" onclick="selectSport('chess')">
+      <div class="sport-card-dot"></div>
+      <div class="sport-card-icon"><i class="ti ti-chess-knight"></i></div>
+      <div class="sport-card-body">
+        <div class="sport-card-label">Chess</div>
+        <div class="sport-card-desc">Tournament clock, move log, material tracker &amp; chess.com-style board.</div>
+        <div class="sport-card-cta"><i class="ti ti-arrow-right"></i> Enter Arena</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -4509,6 +4678,109 @@ input:focus, select:focus, textarea:focus {
           <div id="bd-server-info" style="font-size:12px;color:var(--text2);margin-top:8px;"></div>
         </div>
       </div>
+
+      <!-- PICKLEBALL MATCH SETUP -->
+      <div id="match-pickleball" class="hidden">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-tennis"></i> Players / Teams</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><label>Player / Team A</label><input type="text" id="pb-player-a" placeholder="Player A" value="Player A" onchange="S.pickleball.playerA=this.value;save();renderPickleballLive();"/></div>
+            <div><label>Player / Team B</label><input type="text" id="pb-player-b" placeholder="Player B" value="Player B" onchange="S.pickleball.playerB=this.value;save();renderPickleballLive();"/></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+            <div><label>Format</label>
+              <select id="pb-format" onchange="S.pickleball.format=this.value;save();">
+                <option value="singles">Singles (1v1)</option>
+                <option value="doubles">Doubles (2v2)</option>
+              </select>
+            </div>
+            <div><label>Game to</label>
+              <select id="pb-points" onchange="S.pickleball.pointsToWin=+this.value;save();">
+                <option value="11">11 pts (win by 2)</option>
+                <option value="15">15 pts (win by 2)</option>
+                <option value="21">21 pts (win by 2)</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:10px;">
+            <label>Best of</label>
+            <select id="pb-games" onchange="S.pickleball.gamesToWin=+this.value;save();">
+              <option value="1">1 game</option>
+              <option value="3">Best of 3</option>
+              <option value="5">Best of 5</option>
+            </select>
+          </div>
+          <button class="btn success full mt-12" onclick="startPickleballMatch()"><i class="ti ti-player-play"></i> Start Match</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-info-circle"></i> Pickleball Rules</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">🏓</span><div><b style="color:var(--text);">Scoring (Rally Scoring)</b><br>Every rally scores a point, regardless of who served. First to reach target (11, 15, or 21) wins — must win by 2. At 10-10 (for 11pt), play continues until a 2-point lead is gained.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">🎯</span><div><b style="color:var(--text);">The Serve</b><br>Must be underhand (paddle below wrist). Ball struck below waist. Serve diagonally cross-court, landing in opposite service box. Server must keep both feet behind the baseline. Only one serve attempt per rally.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">🏠</span><div><b style="color:var(--text);">The Kitchen (Non-Volley Zone — NVZ)</b><br>The 7-foot zone on each side of the net. Players CANNOT volley (hit the ball in the air) while standing in the kitchen. You may step in to play a bounced ball, but must exit before volleying. This is the most common fault.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">⬇️</span><div><b style="color:var(--text);">Double-Bounce Rule</b><br>After the serve, the receiving team MUST let the ball bounce once before returning. The serving team must also let the return bounce before volleying. After these two bounces, both teams may volley freely.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">⚠️</span><div><b style="color:var(--text);">Common Faults</b><br>• Ball lands out of bounds<br>• Ball hits the net<br>• Kitchen fault (volleying from NVZ)<br>• Serve fault (wrong court or out)<br>• Ball bounces twice before return</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">🎮</span><div><b style="color:var(--text);">Doubles Rules</b><br>Both players on a team serve before the serve passes to the other team (side-out). Exception: at the very start, only one player serves. Server must call score (server score, receiver score, server number) before each serve.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHESS MATCH SETUP -->
+      <div id="match-chess" class="hidden">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-chess-king"></i> Players</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><label>White ♔</label><input type="text" id="ch-player-white" placeholder="White" value="White" onchange="S.chess.playerWhite=this.value;save();renderChessLive();"/></div>
+            <div><label>Black ♚</label><input type="text" id="ch-player-black" placeholder="Black" value="Black" onchange="S.chess.playerBlack=this.value;save();renderChessLive();"/></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+            <div><label>Time Control</label>
+              <select id="ch-time" onchange="S.chess.timeControl=this.value;applyChessTimeControl();save();">
+                <option value="none">No clock</option>
+                <option value="bullet_1">Bullet 1+0</option>
+                <option value="bullet_2">Bullet 2+1</option>
+                <option value="blitz_3">Blitz 3+0</option>
+                <option value="blitz_5">Blitz 5+0</option>
+                <option value="blitz_5_3">Blitz 5+3</option>
+                <option value="rapid_10">Rapid 10+0</option>
+                <option value="rapid_15_10">Rapid 15+10</option>
+                <option value="rapid_30">Rapid 30+0</option>
+                <option value="classical_60">Classical 60+0</option>
+              </select>
+            </div>
+            <div><label>Increment (sec)</label>
+              <input type="number" id="ch-increment" value="0" min="0" max="60" onchange="S.chess.increment=+this.value;save();"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+            <div><label>Rated?</label>
+              <select id="ch-rated" onchange="S.chess.rated=this.value==='true';save();">
+                <option value="false">Casual</option>
+                <option value="true">Rated</option>
+              </select>
+            </div>
+            <div><label>First Move</label>
+              <select id="ch-first" onchange="S.chess.currentTurn=this.value;save();">
+                <option value="white">White moves first</option>
+                <option value="black">Black moves first</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn success full mt-12" onclick="startChessMatch()"><i class="ti ti-player-play"></i> Start Game</button>
+        </div>
+        <!-- Chess Rules & Guide -->
+        <div class="card">
+          <div class="card-title"><i class="ti ti-info-circle"></i> Chess Guide</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">♟</span><div><b style="color:var(--text);">Pieces & Values</b><br>Pawn=1 · Knight=3 · Bishop=3 · Rook=5 · Queen=9. The King is invaluable — losing it ends the game.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">♛</span><div><b style="color:var(--text);">Objective</b><br>Checkmate your opponent's King — place it under attack with no escape. Draws occur by stalemate, 50-move rule, threefold repetition, or insufficient material.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">⚡</span><div><b style="color:var(--text);">Time Controls</b><br>• <b>Bullet</b> (1-2 min): Ultra-fast instinctive play<br>• <b>Blitz</b> (3-5 min): Fast, popular online format<br>• <b>Rapid</b> (10-30 min): Balanced, most common<br>• <b>Classical</b> (60+ min): Deep strategic play</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">📝</span><div><b style="color:var(--text);">Algebraic Notation</b><br><b>e4</b>=pawn to e4 · <b>Nf3</b>=knight to f3 · <b>O-O</b>=kingside castle · <b>O-O-O</b>=queenside castle · <b>Qxd5</b>=queen captures d5 · <b>e8=Q</b>=pawn promotes to queen · <b>+</b>=check · <b>#</b>=checkmate</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">🖱️</span><div><b style="color:var(--text);">Interactive Board</b><br>Tap any piece to select it — legal moves appear as green dots. Tap a dot to move. Use the Material Balance section to track captures and advantage.</div></div>
+          </div>
+        </div>
+      </div>
+
     </div>
     <!-- END MATCH TAB -->
 
@@ -4816,6 +5088,181 @@ input:focus, select:focus, textarea:focus {
           </div>
         </div>
       </div>
+
+      <!-- PICKLEBALL LIVE -->
+      <div id="live-pickleball" class="hidden">
+        <div id="pickleball-no-match" class="alert warn">Set up players in the Match tab first.</div>
+        <div id="pickleball-live-ui" class="hidden">
+          <!-- Game indicator -->
+          <div id="pb-games-bar" style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;"></div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="bd-scoreboard" style="padding:16px;">
+              <div class="bd-player" id="pb-player-a-card">
+                <div class="bd-player-name" id="pb-a-name-disp">Player A</div>
+                <div class="bd-score" id="pb-score-a">0</div>
+                <button class="bd-score-btn add" onclick="pickleballPoint('a')">+ Point</button>
+              </div>
+              <div class="bd-separator"><div class="bd-sep-text">:</div></div>
+              <div class="bd-player" id="pb-player-b-card">
+                <div class="bd-player-name" id="pb-b-name-disp">Player B</div>
+                <div class="bd-score" id="pb-score-b">0</div>
+                <button class="bd-score-btn add" onclick="pickleballPoint('b')">+ Point</button>
+              </div>
+            </div>
+            <div id="pb-server-row" style="text-align:center;font-size:12px;color:var(--text3);padding:0 16px 12px;"></div>
+          </div>
+
+          <div id="pb-game-scores-row" class="bd-set-results-row" style="margin-top:8px;"></div>
+
+          <div class="card" style="margin-top:10px;">
+            <div class="card-title"><i class="ti ti-bolt"></i> Server</div>
+            <div id="pb-server-display" style="font-size:13px;color:var(--text2);margin-bottom:10px;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn primary-flat full sm" onclick="setPbServer('a')" id="pb-serve-a-btn">A Serves</button>
+              <button class="btn success full sm" onclick="setPbServer('b')" id="pb-serve-b-btn">B Serves</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="ti ti-flag-3"></i> Faults &amp; Events</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn sm warn full" onclick="pbEvent('kitchen_fault_a')"><i class="ti ti-border-none"></i> Kitchen Fault A</button>
+              <button class="btn sm warn full" onclick="pbEvent('kitchen_fault_b')"><i class="ti ti-border-none"></i> Kitchen Fault B</button>
+              <button class="btn sm full" onclick="pbEvent('serve_fault_a')"><i class="ti ti-alert-triangle"></i> Serve Fault A</button>
+              <button class="btn sm full" onclick="pbEvent('serve_fault_b')"><i class="ti ti-alert-triangle"></i> Serve Fault B</button>
+            </div>
+            <div id="pb-event-log" style="margin-top:10px;max-height:120px;overflow-y:auto;font-size:11px;color:var(--text3);"></div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <button class="btn danger sm" onclick="undoPickleballPoint()"><i class="ti ti-arrow-back"></i> Undo</button>
+            <button class="btn warn sm" onclick="newPickleballGame()"><i class="ti ti-arrow-right"></i> Next Game</button>
+            <button class="btn success sm full" onclick="endPickleballMatch()"><i class="ti ti-flag"></i> End Match</button>
+          </div>
+          <div id="pb-match-result" class="result-banner hidden">
+            <div style="font-size:48px;"><i class="ti ti-trophy" style="color:#ffd700;font-size:48px;filter:drop-shadow(0 0 20px rgba(255,215,0,.5));"></i></div>
+            <div class="winner-name" id="pb-result-winner"></div>
+            <div class="margin" id="pb-result-margin"></div>
+            <button class="btn success full mt-12" onclick="newPickleballMatch()"><i class="ti ti-plus"></i> New Match</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHESS LIVE -->
+      <div id="live-chess" class="hidden">
+        <div id="chess-no-match" class="alert warn">Set up players in the Match tab first.</div>
+        <div id="chess-live-ui" class="hidden">
+
+          <!-- Chess.com style board -->
+          <div class="card" style="padding:10px;">
+            <!-- Black info bar -->
+            <div id="ch-black-bar" class="ch-player-bar">
+              <div class="ch-player-avatar ch-black"><i class="ti ti-chess-king"></i></div>
+              <div style="flex:1;">
+                <div class="ch-player-name" id="ch-black-name">Black</div>
+                <div class="ch-material" id="ch-black-captures"></div>
+              </div>
+              <div class="ch-clock" id="ch-clock-black">—</div>
+            </div>
+            <!-- Board -->
+            <div class="ch-board-wrap" id="ch-board-wrap-el">
+              <canvas id="ch-board" width="400" height="400"></canvas>
+              <div id="ch-board-overlay"></div>
+            </div>
+            <!-- White info bar -->
+            <div id="ch-white-bar" class="ch-player-bar">
+              <div class="ch-player-avatar ch-white"><i class="ti ti-chess-king"></i></div>
+              <div style="flex:1;">
+                <div class="ch-player-name" id="ch-white-name">White</div>
+                <div class="ch-material" id="ch-white-captures"></div>
+              </div>
+              <div class="ch-clock" id="ch-clock-white">—</div>
+            </div>
+          </div>
+
+          <!-- Turn & clock controls -->
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <div>
+                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:800;">Current Turn</div>
+                <div id="ch-turn-display" style="font-size:18px;font-weight:900;margin-top:2px;">White to move</div>
+              </div>
+              <div id="ch-move-count" style="font-size:13px;color:var(--text3);">Move 1</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn primary-flat full" id="ch-press-clock-btn" onclick="chPressClock()"><i class="ti ti-clock-play"></i> Press Clock</button>
+              <button class="btn full" onclick="chPause()" id="ch-pause-btn"><i class="ti ti-player-pause"></i> Pause</button>
+            </div>
+          </div>
+
+          <!-- Move logger -->
+          <div class="card">
+            <div class="card-title"><i class="ti ti-list-numbers"></i> Move Log</div>
+            <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+              <input type="text" id="ch-move-input" placeholder="e.g. e4, Nf3, O-O" style="flex:1;min-width:0;" onkeydown="if(event.key==='Enter')chAddMove()"/>
+              <button class="btn primary-flat sm" onclick="chAddMove()"><i class="ti ti-plus"></i></button>
+            </div>
+            <div id="ch-move-log" class="ch-move-log"></div>
+          </div>
+
+          <!-- Material tracker -->
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chess-bishop"></i> Material Balance</div>
+            <div id="ch-material-display" style="font-size:13px;color:var(--text2);">Even</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;">
+              <div>
+                <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">White captures</div>
+                <div id="ch-white-cap-list" class="ch-cap-list"></div>
+              </div>
+              <div>
+                <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Black captures</div>
+                <div id="ch-black-cap-list" class="ch-cap-list"></div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;">
+              <div style="font-size:10px;color:var(--text3);grid-column:1/-1;font-weight:700;">White captures piece:</div>
+              <button class="btn sm" onclick="chCapture('white','pawn')">♟ Pawn</button>
+              <button class="btn sm" onclick="chCapture('white','knight')">♞ Knight</button>
+              <button class="btn sm" onclick="chCapture('white','bishop')">♝ Bishop</button>
+              <button class="btn sm" onclick="chCapture('white','rook')">♜ Rook</button>
+              <button class="btn sm" onclick="chCapture('white','queen')">♛ Queen</button>
+              <button class="btn sm danger" onclick="chUndoCapture('white')">↩ Undo</button>
+              <div style="font-size:10px;color:var(--text3);grid-column:1/-1;font-weight:700;">Black captures piece:</div>
+              <button class="btn sm" onclick="chCapture('black','pawn')">♙ Pawn</button>
+              <button class="btn sm" onclick="chCapture('black','knight')">♘ Knight</button>
+              <button class="btn sm" onclick="chCapture('black','bishop')">♗ Bishop</button>
+              <button class="btn sm" onclick="chCapture('black','rook')">♖ Rook</button>
+              <button class="btn sm" onclick="chCapture('black','queen')">♕ Queen</button>
+              <button class="btn sm danger" onclick="chUndoCapture('black')">↩ Undo</button>
+            </div>
+          </div>
+
+          <!-- Result -->
+          <div class="card">
+            <div class="card-title"><i class="ti ti-flag"></i> End Game</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+              <button class="btn success full sm" onclick="chResult('white','checkmate')">♔ White wins — Checkmate</button>
+              <button class="btn success full sm" onclick="chResult('black','checkmate')">♚ Black wins — Checkmate</button>
+              <button class="btn primary-flat full sm" onclick="chResult('white','resign')">White wins — Resign</button>
+              <button class="btn primary-flat full sm" onclick="chResult('black','resign')">Black wins — Resign</button>
+              <button class="btn full sm" onclick="chResult(null,'draw_agreement')">½–½ Draw (agreement)</button>
+              <button class="btn full sm" onclick="chResult(null,'stalemate')">½–½ Stalemate</button>
+              <button class="btn full sm" onclick="chResult(null,'draw_50')">½–½ 50-move rule</button>
+              <button class="btn full sm" onclick="chResult(null,'draw_repetition')">½–½ Repetition</button>
+              <button class="btn full sm" onclick="chResult(null,'draw_insufficient')">½–½ Insufficient material</button>
+              <button class="btn danger full sm" onclick="chResult(null,'timeout')">⏱ Timeout</button>
+            </div>
+          </div>
+
+          <div id="ch-match-result" class="result-banner hidden">
+            <div style="font-size:48px;">♔</div>
+            <div class="winner-name" id="ch-result-winner"></div>
+            <div class="margin" id="ch-result-reason"></div>
+            <button class="btn success full mt-12" onclick="newChessMatch()"><i class="ti ti-plus"></i> New Game</button>
+          </div>
+        </div>
+      </div>
+
     </div>
     <!-- END LIVE TAB -->
 
@@ -5660,6 +6107,30 @@ const DEFAULT_STATE = {
     setsWonA: 0, setsWonB: 0,
   },
 
+  pickleball: {
+    playerA: 'Player A', playerB: 'Player B',
+    format: 'singles', pointsToWin: 11, gamesToWin: 1,
+    matchStarted: false, matchOver: false,
+    server: 'a',
+    currentGame: 1,
+    games: [{ scoreA:0, scoreB:0, finished:false, winner:null }],
+    gamesWonA: 0, gamesWonB: 0,
+    eventLog: [],
+    scoreHistory: [],
+  },
+
+  chess: {
+    playerWhite: 'White', playerBlack: 'Black',
+    timeControl: 'none', increment: 0, rated: false,
+    currentTurn: 'white',
+    matchStarted: false, matchOver: false,
+    clockWhite: 0, clockBlack: 0, clockRunning: false, clockTurn: 'white',
+    moves: [],
+    capturedByWhite: [], capturedByBlack: [],
+    result: null, resultReason: null,
+    moveCount: 1,
+  },
+
   history: [],
   library: [],
   gallery: [],
@@ -5687,6 +6158,11 @@ function load() {
       { cricket: 'en', football: 'en', badminton: 'en' },
       S.commentaryLanguageBySport || {}
     );
+    // Ensure pickleball and chess state is merged
+    if (!S.pickleball) S.pickleball = JSON.parse(JSON.stringify(DEFAULT_STATE.pickleball));
+    else S.pickleball = Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE.pickleball)), S.pickleball);
+    if (!S.chess) S.chess = JSON.parse(JSON.stringify(DEFAULT_STATE.chess));
+    else S.chess = Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE.chess)), S.chess);
 
     // ── Migrate S.library → S.players (backward compat) ──
     if (!S.players) S.players = [];
@@ -5996,8 +6472,8 @@ function selectSport(sport) {
   _pendingSport = sport;
 
   // Show room entry popup — let user pick solo/create/join
-  const icons = { cricket:'ti-cricket', football:'ti-ball-football', badminton:'ti-ping-pong' };
-  const names = { cricket:'Cricket', football:'Football', badminton:'Badminton' };
+  const icons = { cricket:'ti-cricket', football:'ti-ball-football', badminton:'ti-ping-pong', pickleball:'ti-tennis', chess:'ti-chess-knight' };
+  const names = { cricket:'Cricket', football:'Football', badminton:'Badminton', pickleball:'Pickleball', chess:'Chess' };
   document.getElementById('room-entry-icon').className = 'ti ' + (icons[sport] || 'ti-trophy');
   document.getElementById('room-entry-sport-name').textContent = names[sport] || sport;
   // Reset inline panels
@@ -6020,7 +6496,7 @@ function _doEnterSport(sport) {
 
   document.getElementById('header-sport-badge').classList.remove('hidden');
   document.getElementById('header-sport-badge').innerHTML =
-    `<i class="ti ti-${sport === 'cricket' ? 'cricket' : sport === 'football' ? 'ball-football' : 'ping-pong'}"></i> ${sport.charAt(0).toUpperCase() + sport.slice(1)}`;
+    `<i class="ti ti-${sport === 'cricket' ? 'cricket' : sport === 'football' ? 'ball-football' : sport === 'pickleball' ? 'tennis' : sport === 'chess' ? 'chess-knight' : 'ping-pong'}"></i> ${sport.charAt(0).toUpperCase() + sport.slice(1)}`;
   document.getElementById('header-back-btn').classList.remove('hidden');
   document.getElementById('mode-badge').classList.remove('hidden');
 
@@ -6227,7 +6703,7 @@ function updateRoomEntryCredsBanner() {
 }
 
 function setupSportUI(sport) {
-  ['cricket','football','badminton'].forEach(s => {
+  ['cricket','football','badminton','pickleball','chess'].forEach(s => {
     document.getElementById(`match-${s}`).classList.toggle('hidden', s !== sport);
     document.getElementById(`live-${s}`).classList.toggle('hidden', s !== sport);
   });
@@ -6236,6 +6712,8 @@ function setupSportUI(sport) {
   const liveTab = document.getElementById('tab-live');
   if (sport === 'cricket') liveTab.querySelector('i').className = 'ti ti-cricket';
   else if (sport === 'football') liveTab.querySelector('i').className = 'ti ti-ball-football';
+  else if (sport === 'pickleball') liveTab.querySelector('i').className = 'ti ti-tennis';
+  else if (sport === 'chess') liveTab.querySelector('i').className = 'ti ti-chess-knight';
   else liveTab.querySelector('i').className = 'ti ti-ping-pong';
 
   // Restore match state
@@ -6260,6 +6738,41 @@ function setupSportUI(sport) {
     document.getElementById('badminton-live-ui').classList.remove('hidden');
     renderBadmintonLive();
   }
+  if (sport === 'pickleball') {
+    // Restore input values
+    const pbA = document.getElementById('pb-player-a');
+    const pbB = document.getElementById('pb-player-b');
+    const pbFmt = document.getElementById('pb-format');
+    const pbPts = document.getElementById('pb-points');
+    const pbGames = document.getElementById('pb-games');
+    if (pbA) pbA.value = S.pickleball.playerA || 'Player A';
+    if (pbB) pbB.value = S.pickleball.playerB || 'Player B';
+    if (pbFmt) pbFmt.value = S.pickleball.format || 'singles';
+    if (pbPts) pbPts.value = String(S.pickleball.pointsToWin || 11);
+    if (pbGames) pbGames.value = String(S.pickleball.gamesToWin || 1);
+    if (S.pickleball.matchStarted) {
+      document.getElementById('pickleball-no-match').classList.add('hidden');
+      document.getElementById('pickleball-live-ui').classList.remove('hidden');
+      renderPickleballLive();
+    }
+  }
+  if (sport === 'chess') {
+    // Restore input values
+    const chW = document.getElementById('ch-player-white');
+    const chB = document.getElementById('ch-player-black');
+    const chTime = document.getElementById('ch-time');
+    const chInc = document.getElementById('ch-increment');
+    if (chW) chW.value = S.chess.playerWhite || 'White';
+    if (chB) chB.value = S.chess.playerBlack || 'Black';
+    if (chTime) chTime.value = S.chess.timeControl || 'none';
+    if (chInc) chInc.value = String(S.chess.increment || 0);
+    if (S.chess.matchStarted) {
+      document.getElementById('chess-no-match').classList.add('hidden');
+      document.getElementById('chess-live-ui').classList.remove('hidden');
+      renderChessLive();
+      startChessClock();
+    }
+  }
 
   renderHistory();
   renderGallery();
@@ -6267,6 +6780,7 @@ function setupSportUI(sport) {
 
 function goHome() {
   if (_fbTimerInterval) { clearInterval(_fbTimerInterval); _fbTimerInterval = null; }
+  if (_chClockInterval) { clearInterval(_chClockInterval); _chClockInterval = null; }
   _prevTab = null;
   _currentTab = 'match';
 
@@ -6310,6 +6824,12 @@ function showTab(tab) {
 
   // Re-render history with current sport filter whenever history tab opens
   if (tab === 'history') showHistoryView('list');
+
+  // Resize chess board when switching to live tab
+  if (tab === 'live' && S.sport === 'chess') {
+    setTimeout(_resizeChessCanvas, 50);
+    setTimeout(_resizeChessCanvas, 200);
+  }
 }
 
 function goBack() {
@@ -12791,6 +13311,1080 @@ function copySQLSetup() {
   navigator.clipboard?.writeText(sql).then(() => toast('SQL copied!'));
 }
 
+// ═══════════════════════════════════════════════════════
+// PICKLEBALL ENGINE
+// ═══════════════════════════════════════════════════════
+
+function startPickleballMatch() {
+  const pA = document.getElementById('pb-player-a')?.value.trim() || 'Player A';
+  const pB = document.getElementById('pb-player-b')?.value.trim() || 'Player B';
+  const fmt = document.getElementById('pb-format')?.value || 'singles';
+  const pts = parseInt(document.getElementById('pb-points')?.value || '11');
+  const gamesCount = parseInt(document.getElementById('pb-games')?.value || '1');
+
+  S.pickleball.playerA = pA;
+  S.pickleball.playerB = pB;
+  S.pickleball.format = fmt;
+  S.pickleball.pointsToWin = pts;
+  S.pickleball.gamesToWin = gamesCount;
+  S.pickleball.matchStarted = true;
+  S.pickleball.matchOver = false;
+  S.pickleball.currentGame = 1;
+  S.pickleball.gamesWonA = 0;
+  S.pickleball.gamesWonB = 0;
+  S.pickleball.server = 'a';
+  S.pickleball.eventLog = [];
+  S.pickleball.scoreHistory = [];
+  // Initialise games array
+  S.pickleball.games = [];
+  for (let i = 0; i < Math.max(gamesCount * 2 - 1, 1); i++) {
+    S.pickleball.games.push({ scoreA: 0, scoreB: 0, finished: false, winner: null });
+  }
+  save();
+  document.getElementById('pickleball-no-match').classList.add('hidden');
+  document.getElementById('pickleball-live-ui').classList.remove('hidden');
+  showTab('live');
+  renderPickleballLive();
+  toast('Pickleball match started! 🏓');
+}
+
+function renderPickleballLive() {
+  const pb = S.pickleball;
+  if (!pb.matchStarted) return;
+  const game = pb.games[pb.currentGame - 1] || { scoreA: 0, scoreB: 0 };
+
+  // Name displays
+  const aDisp = document.getElementById('pb-a-name-disp');
+  const bDisp = document.getElementById('pb-b-name-disp');
+  if (aDisp) aDisp.textContent = pb.playerA;
+  if (bDisp) bDisp.textContent = pb.playerB;
+
+  // Scores
+  const scoreA = document.getElementById('pb-score-a');
+  const scoreB = document.getElementById('pb-score-b');
+  if (scoreA) scoreA.textContent = game.scoreA;
+  if (scoreB) scoreB.textContent = game.scoreB;
+
+  // Server highlight
+  const cardA = document.getElementById('pb-player-a-card');
+  const cardB = document.getElementById('pb-player-b-card');
+  if (cardA) cardA.classList.toggle('serving', pb.server === 'a');
+  if (cardB) cardB.classList.toggle('serving', pb.server === 'b');
+
+  // Server row
+  const sRow = document.getElementById('pb-server-row');
+  if (sRow) {
+    const serverName = pb.server === 'a' ? pb.playerA : pb.playerB;
+    sRow.innerHTML = `<span class="pb-server-dot"></span><b>${esc(serverName)}</b> is serving`;
+  }
+
+  // Games bar
+  _renderPbGamesBar();
+
+  // Server display card
+  const sDis = document.getElementById('pb-server-display');
+  if (sDis) {
+    const serverName = pb.server === 'a' ? pb.playerA : pb.playerB;
+    sDis.innerHTML = `<span class="pb-server-dot"></span><b style="color:var(--text)">${esc(serverName)}</b> is serving — Game ${pb.currentGame}`;
+  }
+
+  // Serve buttons active state
+  const sBtnA = document.getElementById('pb-serve-a-btn');
+  const sBtnB = document.getElementById('pb-serve-b-btn');
+  if (sBtnA) sBtnA.classList.toggle('primary-flat', pb.server === 'a');
+  if (sBtnB) sBtnB.classList.toggle('primary-flat', pb.server === 'b');
+
+  // Previous game scores
+  _renderPbGameScores();
+
+  // Event log
+  _renderPbEventLog();
+}
+
+function _renderPbGamesBar() {
+  const pb = S.pickleball;
+  const bar = document.getElementById('pb-games-bar');
+  if (!bar) return;
+  const total = pb.games.length;
+  bar.innerHTML = pb.games.map((g, i) => {
+    const num = i + 1;
+    const isCurrent = num === pb.currentGame;
+    const won = g.finished ? (g.winner === 'a' ? `${pb.playerA.split(' ')[0]} ${g.scoreA}-${g.scoreB}` : `${pb.playerB.split(' ')[0]} ${g.scoreB}-${g.scoreA}`) : null;
+    const cls = g.finished ? 'pb-game-chip won' : isCurrent ? 'pb-game-chip active' : 'pb-game-chip';
+    return `<span class="${cls}">G${num}${g.finished ? ` ✓` : isCurrent ? ' 🏓' : ''}</span>`;
+  }).join('');
+}
+
+function _renderPbGameScores() {
+  const pb = S.pickleball;
+  const row = document.getElementById('pb-game-scores-row');
+  if (!row) return;
+  const done = pb.games.filter(g => g.finished);
+  if (!done.length) { row.innerHTML = ''; return; }
+  row.innerHTML = done.map((g, i) => {
+    const winner = g.winner === 'a' ? pb.playerA : pb.playerB;
+    return `<span class="bd-set-result-pill" style="border-color:var(--pickleball-border,rgba(52,211,153,.32));color:var(--pickleball-primary,#34d399);">G${i+1}: ${g.scoreA}–${g.scoreB}</span>`;
+  }).join('');
+}
+
+function _renderPbEventLog() {
+  const pb = S.pickleball;
+  const el = document.getElementById('pb-event-log');
+  if (!el) return;
+  if (!pb.eventLog || !pb.eventLog.length) { el.innerHTML = '<div style="color:var(--text3);">No events yet.</div>'; return; }
+  el.innerHTML = [...pb.eventLog].reverse().slice(0, 15).map(e =>
+    `<div style="padding:3px 0;border-bottom:1px solid var(--border);">${esc(e)}</div>`
+  ).join('');
+}
+
+function pickleballPoint(side) {
+  const pb = S.pickleball;
+  if (!pb.matchStarted || pb.matchOver) return;
+  const game = pb.games[pb.currentGame - 1];
+  if (!game || game.finished) return;
+
+  // Score the point
+  if (side === 'a') game.scoreA++;
+  else game.scoreB++;
+
+  // Store history for undo
+  pb.scoreHistory.push(JSON.parse(JSON.stringify({ game: pb.currentGame - 1, scoreA: game.scoreA, scoreB: game.scoreB, server: pb.server, gamesWonA: pb.gamesWonA, gamesWonB: pb.gamesWonB })));
+
+  // In rally scoring, server changes ONLY when server loses the point
+  // (Classic side-out scoring: point only scored when you serve)
+  // Arena uses rally scoring (modern): every rally scores, server changes on side-out
+  // We track server manually, so just update serve indicator
+
+  // Log event
+  const playerName = side === 'a' ? pb.playerA : pb.playerB;
+  pb.eventLog.push(`Point to ${playerName} — ${game.scoreA}–${game.scoreB}`);
+
+  // Check game win condition
+  const pts = pb.pointsToWin;
+  const scoreA = game.scoreA, scoreB = game.scoreB;
+  const leadA = scoreA >= pts && scoreA - scoreB >= 2;
+  const leadB = scoreB >= pts && scoreB - scoreA >= 2;
+
+  if (leadA || leadB) {
+    game.finished = true;
+    game.winner = leadA ? 'a' : 'b';
+    if (leadA) pb.gamesWonA++;
+    else pb.gamesWonB++;
+
+    const winner = leadA ? pb.playerA : pb.playerB;
+    pb.eventLog.push(`🏆 ${winner} wins Game ${pb.currentGame}! (${scoreA}–${scoreB})`);
+
+    // Check match win
+    if (pb.gamesWonA >= pb.gamesToWin || pb.gamesWonB >= pb.gamesToWin) {
+      pb.matchOver = true;
+      pb.result = leadA ? 'a' : 'b';
+      _endPickleballMatch();
+      save();
+      renderPickleballLive();
+      return;
+    }
+
+    toast(`Game ${pb.currentGame} — ${winner} wins!`);
+    // Auto advance after short delay
+    setTimeout(() => {
+      pb.currentGame++;
+      // Alternate server at start of each new game
+      pb.server = pb.server === 'a' ? 'b' : 'a';
+      save();
+      renderPickleballLive();
+    }, 1200);
+  }
+
+  save();
+  renderPickleballLive();
+}
+
+function undoPickleballPoint() {
+  const pb = S.pickleball;
+  if (!pb.matchStarted || !pb.scoreHistory || !pb.scoreHistory.length) { toast('Nothing to undo.'); return; }
+  const prev = pb.scoreHistory.pop();
+  const game = pb.games[prev.game];
+  game.scoreA = prev.scoreA;
+  game.scoreB = prev.scoreB;
+  game.finished = false;
+  game.winner = null;
+  pb.server = prev.server;
+  pb.gamesWonA = prev.gamesWonA;
+  pb.gamesWonB = prev.gamesWonB;
+  pb.currentGame = prev.game + 1;
+  pb.matchOver = false;
+  pb.eventLog.pop();
+  document.getElementById('pb-match-result').classList.add('hidden');
+  save();
+  renderPickleballLive();
+  toast('Undone.');
+}
+
+function setPbServer(side) {
+  S.pickleball.server = side;
+  save();
+  renderPickleballLive();
+}
+
+function pbEvent(type) {
+  const pb = S.pickleball;
+  const pA = pb.playerA, pB = pb.playerB;
+  const msgs = {
+    kitchen_fault_a: `🚫 Kitchen fault — ${pA} (NVZ violation)`,
+    kitchen_fault_b: `🚫 Kitchen fault — ${pB} (NVZ violation)`,
+    serve_fault_a: `⚠️ Serve fault — ${pA}`,
+    serve_fault_b: `⚠️ Serve fault — ${pB}`,
+  };
+  const msg = msgs[type] || type;
+  if (!pb.eventLog) pb.eventLog = [];
+  pb.eventLog.push(msg);
+  // Faults give point to the other side
+  if (type === 'kitchen_fault_a' || type === 'serve_fault_a') pickleballPoint('b');
+  else if (type === 'kitchen_fault_b' || type === 'serve_fault_b') pickleballPoint('a');
+  else { save(); renderPickleballLive(); }
+  toast(msg);
+}
+
+function newPickleballGame() {
+  const pb = S.pickleball;
+  if (pb.currentGame < pb.games.length) {
+    const cur = pb.games[pb.currentGame - 1];
+    cur.finished = true;
+    // Determine winner by current score
+    cur.winner = cur.scoreA >= cur.scoreB ? 'a' : 'b';
+    if (cur.winner === 'a') pb.gamesWonA++;
+    else pb.gamesWonB++;
+    pb.currentGame++;
+    pb.server = pb.server === 'a' ? 'b' : 'a';
+    save();
+    renderPickleballLive();
+    toast(`Game ${pb.currentGame - 1} ended. Starting Game ${pb.currentGame}.`);
+  }
+}
+
+function _endPickleballMatch() {
+  const pb = S.pickleball;
+  const winner = pb.result === 'a' ? pb.playerA : pb.playerB;
+  const loser = pb.result === 'a' ? pb.playerB : pb.playerA;
+  const resEl = document.getElementById('pb-match-result');
+  const winEl = document.getElementById('pb-result-winner');
+  const marginEl = document.getElementById('pb-result-margin');
+  if (winEl) winEl.textContent = `${winner} wins!`;
+  if (marginEl) marginEl.textContent = `${pb.gamesWonA}–${pb.gamesWonB} games`;
+  if (resEl) resEl.classList.remove('hidden');
+
+  // Save to history
+  const allGameScores = pb.games.filter(g => g.finished || g.scoreA > 0 || g.scoreB > 0).map(g => `${g.scoreA}–${g.scoreB}`).join(', ');
+  S.history.unshift({
+    id: Date.now(), sport: 'pickleball',
+    title: `${pb.playerA} vs ${pb.playerB}`,
+    result: `${winner} wins ${pb.gamesWonA}–${pb.gamesWonB}`,
+    detail: `Games: ${allGameScores}`,
+    date: new Date().toLocaleDateString(),
+  });
+  save();
+  renderHistory();
+  toast(`🏆 ${winner} wins the match!`);
+}
+
+function endPickleballMatch() {
+  const pb = S.pickleball;
+  pb.matchOver = true;
+  pb.result = pb.gamesWonA >= pb.gamesWonB ? 'a' : 'b';
+  _endPickleballMatch();
+  save();
+  renderPickleballLive();
+}
+
+function newPickleballMatch() {
+  S.pickleball = JSON.parse(JSON.stringify(DEFAULT_STATE.pickleball));
+  document.getElementById('pickleball-no-match').classList.remove('hidden');
+  document.getElementById('pickleball-live-ui').classList.add('hidden');
+  document.getElementById('pb-match-result').classList.add('hidden');
+  save();
+  showTab('match');
+}
+
+
+// ═══════════════════════════════════════════════════════
+// CHESS ENGINE  (chess.com-style board + full tracker)
+// ═══════════════════════════════════════════════════════
+
+/* --- Piece constants & board state --- */
+const CH_PIECES = {
+  // value in centipawns for material tracking
+  pawn:1, knight:3, bishop:3, rook:5, queen:9, king:0
+};
+
+const CH_PIECE_UNICODE = {
+  white: { king:'♔', queen:'♕', rook:'♖', bishop:'♗', knight:'♘', pawn:'♙' },
+  black: { king:'♚', queen:'♛', rook:'♜', bishop:'♝', knight:'♞', pawn:'♟' },
+};
+
+const CH_PIECE_DISPLAY = {
+  white: { king:'K', queen:'Q', rook:'R', bishop:'B', knight:'N', pawn:'' },
+  black: { king:'k', queen:'q', rook:'r', bishop:'b', knight:'n', pawn:'' },
+};
+
+// Initial board position [rank 8→1][file a→h]
+// Format: {c:'white'|'black', t:'king'|'queen'|'rook'|'bishop'|'knight'|'pawn'} or null
+function _chInitBoard() {
+  const B = Array.from({length:8}, () => Array(8).fill(null));
+  // Back rank pieces for both colors
+  const backRank = ['rook','knight','bishop','queen','king','bishop','knight','rook'];
+  backRank.forEach((t, f) => {
+    B[0][f] = {c:'black', t}; // rank 8
+    B[7][f] = {c:'white', t}; // rank 1
+  });
+  for (let f = 0; f < 8; f++) {
+    B[1][f] = {c:'black', t:'pawn'}; // rank 7
+    B[6][f] = {c:'white', t:'pawn'}; // rank 2
+  }
+  return B;
+}
+
+let _chBoard = null;       // current board state
+let _chSelected = null;    // {r, f} selected square
+let _chLegalMoves = [];    // legal moves for selected piece
+let _chClockInterval = null;
+let _chPromotionPending = null; // {from, to, color}
+
+// Time controls in seconds
+const CH_TIME_CONTROLS = {
+  none:0,
+  bullet_1:60, bullet_2:120,
+  blitz_3:180, blitz_5:300, blitz_5_3:300,
+  rapid_10:600, rapid_15_10:900, rapid_30:1800,
+  classical_60:3600
+};
+const CH_INCREMENTS = {
+  bullet_2:1, blitz_5_3:3, rapid_15_10:10
+};
+
+function applyChessTimeControl() {
+  const sel = document.getElementById('ch-time');
+  const inc = document.getElementById('ch-increment');
+  if (!sel) return;
+  const tc = sel.value;
+  const autoInc = CH_INCREMENTS[tc] || 0;
+  if (inc) inc.value = autoInc;
+  S.chess.timeControl = tc;
+  S.chess.increment = autoInc;
+}
+
+function startChessMatch() {
+  const pW = document.getElementById('ch-player-white')?.value.trim() || 'White';
+  const pB = document.getElementById('ch-player-black')?.value.trim() || 'Black';
+  const tc = document.getElementById('ch-time')?.value || 'none';
+  const inc = parseInt(document.getElementById('ch-increment')?.value || '0');
+  const rated = document.getElementById('ch-rated')?.value === 'true';
+  const firstTurn = document.getElementById('ch-first')?.value || 'white';
+
+  const secs = CH_TIME_CONTROLS[tc] || 0;
+  S.chess.playerWhite = pW;
+  S.chess.playerBlack = pB;
+  S.chess.timeControl = tc;
+  S.chess.increment = inc;
+  S.chess.rated = rated;
+  S.chess.currentTurn = firstTurn;
+  S.chess.matchStarted = true;
+  S.chess.matchOver = false;
+  S.chess.clockWhite = secs;
+  S.chess.clockBlack = secs;
+  S.chess.clockRunning = false;
+  S.chess.clockTurn = firstTurn;
+  S.chess.moves = [];
+  S.chess.capturedByWhite = [];
+  S.chess.capturedByBlack = [];
+  S.chess.result = null;
+  S.chess.resultReason = null;
+  S.chess.moveCount = 1;
+
+  // Init board
+  _chBoard = _chInitBoard();
+  _chSelected = null;
+  _chLegalMoves = [];
+  _chPromotionPending = null;
+
+  save();
+  document.getElementById('chess-no-match').classList.add('hidden');
+  document.getElementById('chess-live-ui').classList.remove('hidden');
+  showTab('live');
+  renderChessLive();
+  _drawChessBoard();
+  // Auto-start clock for timed games
+  if (secs > 0) {
+    setTimeout(() => { S.chess.clockRunning = true; startChessClock(); }, 300);
+  }
+  toast('Chess game started! ♔');
+}
+
+function renderChessLive() {
+  const ch = S.chess;
+  if (!ch.matchStarted) return;
+
+  // Player names
+  const wName = document.getElementById('ch-white-name');
+  const bName = document.getElementById('ch-black-name');
+  if (wName) wName.textContent = ch.playerWhite;
+  if (bName) bName.textContent = ch.playerBlack;
+
+  // Active turn highlights
+  const wBar = document.getElementById('ch-white-bar');
+  const bBar = document.getElementById('ch-black-bar');
+  if (wBar) wBar.classList.toggle('active-turn', ch.currentTurn === 'white' && !ch.matchOver);
+  if (bBar) bBar.classList.toggle('active-turn', ch.currentTurn === 'black' && !ch.matchOver);
+
+  // Clock displays
+  _updateChessClockDisplay();
+
+  // Turn display
+  const turnEl = document.getElementById('ch-turn-display');
+  if (turnEl) {
+    if (ch.matchOver) {
+      const r = ch.result;
+      turnEl.textContent = r === 'draw' ? 'Draw — ½–½' : `${r === 'white' ? ch.playerWhite : ch.playerBlack} wins!`;
+      turnEl.style.color = r === 'white' ? '#f0f0f0' : r === 'black' ? 'var(--chess-primary)' : 'var(--amber)';
+    } else {
+      const moverName = ch.currentTurn === 'white' ? ch.playerWhite : ch.playerBlack;
+      const colorDot = ch.currentTurn === 'white' ? '♔' : '♚';
+      turnEl.textContent = `${colorDot} ${moverName} to move`;
+      turnEl.style.color = '';
+    }
+  }
+
+  // Move count
+  const mcEl = document.getElementById('ch-move-count');
+  if (mcEl) mcEl.textContent = `Move ${ch.moveCount}`;
+
+  // Move log
+  _renderChessMoveLog();
+
+  // Material
+  _renderChessMaterial();
+
+  // Board
+  _drawChessBoard();
+}
+
+function _updateChessClockDisplay() {
+  const ch = S.chess;
+  const wClk = document.getElementById('ch-clock-white');
+  const bClk = document.getElementById('ch-clock-black');
+  if (wClk) {
+    wClk.textContent = _fmtChessClock(ch.clockWhite);
+    wClk.className = 'ch-clock' + (ch.currentTurn === 'white' && ch.clockRunning ? ' active' : '') + (ch.clockWhite < 30 && ch.clockWhite > 0 ? ' low-time' : '');
+  }
+  if (bClk) {
+    bClk.textContent = _fmtChessClock(ch.clockBlack);
+    bClk.className = 'ch-clock' + (ch.currentTurn === 'black' && ch.clockRunning ? ' active' : '') + (ch.clockBlack < 30 && ch.clockBlack > 0 ? ' low-time' : '');
+  }
+  // Hide clocks if no time control
+  if (ch.timeControl === 'none') {
+    if (wClk) wClk.textContent = '—';
+    if (bClk) bClk.textContent = '—';
+  }
+}
+
+function _fmtChessClock(secs) {
+  if (secs <= 0) return '0:00';
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function startChessClock() {
+  if (_chClockInterval) clearInterval(_chClockInterval);
+  if (!S.chess.matchStarted || S.chess.matchOver || S.chess.timeControl === 'none') return;
+  _chClockInterval = setInterval(() => {
+    if (!S.chess.clockRunning || S.chess.matchOver) return;
+    if (S.chess.currentTurn === 'white') {
+      S.chess.clockWhite = Math.max(0, S.chess.clockWhite - 1);
+      if (S.chess.clockWhite === 0) { chResult('black', 'timeout'); return; }
+    } else {
+      S.chess.clockBlack = Math.max(0, S.chess.clockBlack - 1);
+      if (S.chess.clockBlack === 0) { chResult('white', 'timeout'); return; }
+    }
+    _updateChessClockDisplay();
+  }, 1000);
+}
+
+function stopChessClock() {
+  if (_chClockInterval) { clearInterval(_chClockInterval); _chClockInterval = null; }
+}
+
+function chPressClock() {
+  const ch = S.chess;
+  if (!ch.matchStarted || ch.matchOver) return;
+  // Add increment to player who just moved
+  if (ch.timeControl !== 'none' && ch.increment > 0) {
+    if (ch.currentTurn === 'white') ch.clockBlack += ch.increment; // black just pressed (white's turn means black moved last)
+    else ch.clockWhite += ch.increment;
+  }
+  // Switch turn
+  ch.currentTurn = ch.currentTurn === 'white' ? 'black' : 'white';
+  ch.clockRunning = true;
+  if (!_chClockInterval) startChessClock();
+  save();
+  renderChessLive();
+}
+
+function chPause() {
+  const ch = S.chess;
+  ch.clockRunning = !ch.clockRunning;
+  const btn = document.getElementById('ch-pause-btn');
+  if (btn) btn.innerHTML = ch.clockRunning
+    ? '<i class="ti ti-player-pause"></i> Pause'
+    : '<i class="ti ti-player-play"></i> Resume';
+  save();
+}
+
+function chAddMove() {
+  const input = document.getElementById('ch-move-input');
+  if (!input) return;
+  const notation = input.value.trim();
+  if (!notation) return;
+
+  const ch = S.chess;
+  const color = ch.currentTurn;
+
+  // Classify move type for styling
+  const isCheck = notation.includes('+');
+  const isCheckmate = notation.includes('#');
+  const isCastle = notation === 'O-O' || notation === 'O-O-O';
+  const isCapture = notation.includes('x');
+  const isPromotion = notation.includes('=');
+  const isSpecial = isCastle || isCheckmate || isPromotion;
+
+  ch.moves.push({ notation, color, isSpecial, isCheck, isCapture, isCastle });
+  input.value = '';
+
+  // Update move count (increments after black moves)
+  if (color === 'black') ch.moveCount++;
+
+  // Switch turn via press-clock logic (adds increment too)
+  if (ch.timeControl !== 'none' && ch.increment > 0) {
+    if (color === 'white') ch.clockWhite += ch.increment;
+    else ch.clockBlack += ch.increment;
+  }
+  ch.currentTurn = color === 'white' ? 'black' : 'white';
+  ch.clockRunning = true;
+  if (!_chClockInterval && ch.timeControl !== 'none') startChessClock();
+
+  // Handle check/checkmate
+  if (isCheckmate) {
+    chResult(color, 'checkmate');
+    return;
+  }
+
+  save();
+  renderChessLive();
+  // Update board overlay with last move hint
+  _drawChessBoard();
+
+  // Focus input back for quick logging
+  input.focus();
+}
+
+function _renderChessMoveLog() {
+  const ch = S.chess;
+  const el = document.getElementById('ch-move-log');
+  if (!el) return;
+  if (!ch.moves.length) { el.innerHTML = '<div style="color:var(--text3);font-size:12px;grid-column:1/-1;">No moves yet. Log moves in the field above.</div>'; return; }
+
+  let html = '';
+  let moveNum = 1;
+  for (let i = 0; i < ch.moves.length; i += 2) {
+    const white = ch.moves[i];
+    const black = ch.moves[i + 1];
+    const isLastWhite = i === ch.moves.length - 1 && !black;
+    const isLastBlack = black && i + 1 === ch.moves.length - 1;
+    const wCls = 'ch-move-cell' + (white.isSpecial ? ' special' : '') + (isLastWhite ? ' latest' : '');
+    const bCls = black ? ('ch-move-cell' + (black.isSpecial ? ' special' : '') + (isLastBlack ? ' latest' : '')) : '';
+    html += `<span class="ch-move-num">${moveNum}.</span>`;
+    html += `<span class="${wCls}">${esc(white.notation)}</span>`;
+    html += black ? `<span class="${bCls}">${esc(black.notation)}</span>` : `<span></span>`;
+    moveNum++;
+  }
+  el.innerHTML = html;
+  // Auto-scroll to bottom
+  el.scrollTop = el.scrollHeight;
+}
+
+function _renderChessMaterial() {
+  const ch = S.chess;
+  // White captures (pieces white has taken from black)
+  const wCapEl = document.getElementById('ch-white-cap-list');
+  const bCapEl = document.getElementById('ch-black-cap-list');
+  const wBarCap = document.getElementById('ch-white-captures');
+  const bBarCap = document.getElementById('ch-black-captures');
+
+  const pieceUnicode = { pawn:'♟', knight:'♞', bishop:'♝', rook:'♜', queen:'♛' };
+  const pieceValue = { pawn:1, knight:3, bishop:3, rook:5, queen:9 };
+
+  const wCaps = ch.capturedByWhite || [];
+  const bCaps = ch.capturedByBlack || [];
+
+  const wVal = wCaps.reduce((s, p) => s + (pieceValue[p] || 0), 0);
+  const bVal = bCaps.reduce((s, p) => s + (pieceValue[p] || 0), 0);
+  const diff = wVal - bVal;
+
+  if (wCapEl) wCapEl.innerHTML = wCaps.map(p => `<span>${pieceUnicode[p] || p}</span>`).join('') || '<span style="color:var(--text3);font-size:11px;">None</span>';
+  if (bCapEl) bCapEl.innerHTML = bCaps.map(p => `<span>${pieceUnicode[p] || p}</span>`).join('') || '<span style="color:var(--text3);font-size:11px;">None</span>';
+
+  // Bar material info (small)
+  if (wBarCap) wBarCap.textContent = wCaps.map(p => pieceUnicode[p] || '').join('') + (diff > 0 ? ` +${diff}` : '');
+  if (bBarCap) bBarCap.textContent = bCaps.map(p => pieceUnicode[p] || '').join('') + (diff < 0 ? ` +${Math.abs(diff)}` : '');
+
+  // Material display
+  const matEl = document.getElementById('ch-material-display');
+  if (matEl) {
+    if (diff > 0) matEl.innerHTML = `<span style="color:#f0f0f0;font-weight:800;">${ch.playerWhite}</span> is up <span style="color:var(--chess-primary)">${diff}</span> point${diff !== 1 ? 's' : ''}`;
+    else if (diff < 0) matEl.innerHTML = `<span style="color:var(--chess-primary);font-weight:800;">${ch.playerBlack}</span> is up <span style="color:var(--chess-primary)">${Math.abs(diff)}</span> point${Math.abs(diff) !== 1 ? 's' : ''}`;
+    else matEl.textContent = 'Even material';
+  }
+}
+
+function chCapture(capturer, piece) {
+  const ch = S.chess;
+  if (capturer === 'white') {
+    if (!ch.capturedByWhite) ch.capturedByWhite = [];
+    ch.capturedByWhite.push(piece);
+  } else {
+    if (!ch.capturedByBlack) ch.capturedByBlack = [];
+    ch.capturedByBlack.push(piece);
+  }
+  save();
+  _renderChessMaterial();
+}
+
+function chUndoCapture(capturer) {
+  const ch = S.chess;
+  if (capturer === 'white' && ch.capturedByWhite && ch.capturedByWhite.length) ch.capturedByWhite.pop();
+  else if (capturer === 'black' && ch.capturedByBlack && ch.capturedByBlack.length) ch.capturedByBlack.pop();
+  save();
+  _renderChessMaterial();
+}
+
+function chResult(winner, reason) {
+  const ch = S.chess;
+  stopChessClock();
+  ch.clockRunning = false;
+  ch.matchOver = true;
+  ch.result = winner; // 'white' | 'black' | null (draw)
+  ch.resultReason = reason;
+
+  const reasonLabels = {
+    checkmate: 'Checkmate', resign: 'Resignation', timeout: 'Time Out',
+    draw_agreement: 'Draw by Agreement', stalemate: 'Stalemate',
+    draw_50: '50-move Rule', draw_repetition: 'Threefold Repetition',
+    draw_insufficient: 'Insufficient Material', draw_timeout: 'Draw on Time',
+  };
+
+  const reasonLabel = reasonLabels[reason] || reason;
+  const winnerName = winner === 'white' ? ch.playerWhite : winner === 'black' ? ch.playerBlack : null;
+  const resultStr = winner ? `${winnerName} wins by ${reasonLabel}` : `Draw — ${reasonLabel}`;
+  const scoreStr = winner === 'white' ? '1–0' : winner === 'black' ? '0–1' : '½–½';
+
+  const resEl = document.getElementById('ch-match-result');
+  const winEl = document.getElementById('ch-result-winner');
+  const reasonEl = document.getElementById('ch-result-reason');
+  if (resEl) resEl.classList.remove('hidden');
+  if (winEl) winEl.textContent = winner ? `${winnerName} wins!` : 'Draw!';
+  if (reasonEl) reasonEl.textContent = `${scoreStr} — ${reasonLabel}`;
+
+  // Save to history
+  S.history.unshift({
+    id: Date.now(), sport: 'chess',
+    title: `${ch.playerWhite} vs ${ch.playerBlack}`,
+    result: resultStr,
+    detail: `${scoreStr} • ${ch.moves.length} moves${ch.timeControl !== 'none' ? ' • ' + ch.timeControl.replace('_', '+').replace('bullet', 'Bullet').replace('blitz', 'Blitz').replace('rapid', 'Rapid') : ''}`,
+    date: new Date().toLocaleDateString(),
+  });
+  save();
+  renderHistory();
+  renderChessLive();
+  toast(winner ? `♔ ${winnerName} wins — ${reasonLabel}!` : `½–½ Draw — ${reasonLabel}`);
+}
+
+function newChessMatch() {
+  stopChessClock();
+  S.chess = JSON.parse(JSON.stringify(DEFAULT_STATE.chess));
+  _chBoard = null;
+  _chSelected = null;
+  _chLegalMoves = [];
+  document.getElementById('chess-no-match').classList.remove('hidden');
+  document.getElementById('chess-live-ui').classList.add('hidden');
+  document.getElementById('ch-match-result').classList.add('hidden');
+  save();
+  showTab('match');
+}
+
+// ─── Chess Board Canvas Drawing (chess.com-inspired dark board) ───
+
+function _drawChessBoard() {
+  const canvas = document.getElementById('ch-board');
+  if (!canvas) return;
+  if (!_chBoard) {
+    // Draw empty board with setup hint
+    const ctx = canvas.getContext('2d');
+    const size = canvas.width;
+    const sq = size / 8;
+    for (let r = 0; r < 8; r++) {
+      for (let f = 0; f < 8; f++) {
+        const isLight = (r + f) % 2 === 0;
+        ctx.fillStyle = isLight ? '#769656' : '#4a7c59';
+        ctx.fillRect(f * sq, r * sq, sq, sq);
+      }
+    }
+    ctx.fillStyle = 'rgba(0,0,0,.5)';
+    ctx.fillRect(0, size/2 - 20, size, 40);
+    ctx.fillStyle = '#fff';
+    ctx.font = `bold ${size * 0.045}px "Barlow Condensed", sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('Start game to activate board', size/2, size/2);
+    return;
+  }
+
+  const ctx = canvas.getContext('2d');
+  const size = canvas.width;
+  const sq = size / 8;
+
+  // Colors (chess.com dark theme inspired)
+  const lightSq = '#769656';
+  const darkSq  = '#4a7c59';
+  const selectedColor = 'rgba(20,85,30,0.8)';
+  const legalMoveColor = 'rgba(20,85,30,0.5)';
+  const lastMoveColor = 'rgba(205,210,106,0.4)';
+
+  for (let r = 0; r < 8; r++) {
+    for (let f = 0; f < 8; f++) {
+      const isLight = (r + f) % 2 === 0;
+      ctx.fillStyle = isLight ? lightSq : darkSq;
+      ctx.fillRect(f * sq, r * sq, sq, sq);
+
+      // Highlight selected
+      if (_chSelected && _chSelected.r === r && _chSelected.f === f) {
+        ctx.fillStyle = 'rgba(255,255,100,0.5)';
+        ctx.fillRect(f * sq, r * sq, sq, sq);
+      }
+    }
+  }
+
+  // Legal move dots
+  _chLegalMoves.forEach(({r, f}) => {
+    const piece = _chBoard[r][f];
+    ctx.fillStyle = piece ? 'rgba(255,100,100,0.5)' : 'rgba(20,85,30,0.6)';
+    if (piece) {
+      ctx.strokeStyle = 'rgba(20,85,30,0.8)';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(f * sq + 1.5, r * sq + 1.5, sq - 3, sq - 3);
+    } else {
+      ctx.beginPath();
+      ctx.arc(f * sq + sq/2, r * sq + sq/2, sq * 0.15, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+
+  // Coordinate labels
+  ctx.font = `bold ${sq * 0.22}px "Barlow Condensed", sans-serif`;
+  for (let i = 0; i < 8; i++) {
+    // Rank numbers (a-side)
+    ctx.fillStyle = i % 2 === 0 ? darkSq : lightSq;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText(String(8 - i), 2, i * sq + 2);
+    // File letters (bottom)
+    ctx.fillStyle = i % 2 === 0 ? lightSq : darkSq;
+    ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+    ctx.fillText(String.fromCharCode(97 + i), (i + 1) * sq - 2, 8 * sq - 2);
+  }
+
+  // Draw pieces
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (let r = 0; r < 8; r++) {
+    for (let f = 0; f < 8; f++) {
+      const piece = _chBoard[r][f];
+      if (!piece) continue;
+      const unicode = CH_PIECE_UNICODE[piece.c][piece.t];
+      const cx = f * sq + sq / 2;
+      const cy = r * sq + sq / 2;
+
+      // Shadow
+      ctx.shadowColor = 'rgba(0,0,0,0.6)';
+      ctx.shadowBlur = sq * 0.15;
+      ctx.shadowOffsetX = sq * 0.04;
+      ctx.shadowOffsetY = sq * 0.04;
+
+      ctx.font = `${sq * 0.72}px serif`;
+      ctx.fillStyle = piece.c === 'white' ? '#FFFFFF' : '#1a1a1a';
+      ctx.fillText(unicode, cx, cy + sq * 0.02);
+
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+
+      // White piece outline for visibility
+      if (piece.c === 'white') {
+        ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+        ctx.lineWidth = sq * 0.015;
+        // Re-draw with stroke for outline effect
+      }
+    }
+  }
+}
+
+// Board click handler — piece selection and moves
+function _chBoardClick(event) {
+  if (!_chBoard || !S.chess.matchStarted || S.chess.matchOver) return;
+  const canvas = document.getElementById('ch-board');
+  if (!canvas) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = (event.clientX - rect.left) * (canvas.width / rect.width);
+  const y = (event.clientY - rect.top) * (canvas.height / rect.height);
+  const sq = canvas.width / 8;
+  const f = Math.floor(x / sq);
+  const r = Math.floor(y / sq);
+  if (f < 0 || f > 7 || r < 0 || r > 7) return;
+
+  const clickedPiece = _chBoard[r][f];
+  const currentColor = S.chess.currentTurn;
+
+  // If we have a pending promotion, ignore board clicks
+  if (_chPromotionPending) return;
+
+  if (_chSelected) {
+    // Check if this is a legal move destination
+    const isLegal = _chLegalMoves.some(m => m.r === r && m.f === f);
+    if (isLegal) {
+      _chMakeMove(_chSelected.r, _chSelected.f, r, f);
+      _chSelected = null;
+      _chLegalMoves = [];
+      _drawChessBoard();
+      return;
+    }
+    // Deselect or select new piece
+    _chSelected = null;
+    _chLegalMoves = [];
+  }
+
+  // Select a piece of current player
+  if (clickedPiece && clickedPiece.c === currentColor) {
+    _chSelected = {r, f};
+    _chLegalMoves = _chGetLegalMoves(r, f);
+  }
+  _drawChessBoard();
+}
+
+function _chGetLegalMoves(r, f) {
+  if (!_chBoard) return [];
+  const piece = _chBoard[r][f];
+  if (!piece) return [];
+  const moves = [];
+  const c = piece.c;
+  const opp = c === 'white' ? 'black' : 'white';
+  const dir = c === 'white' ? -1 : 1; // white moves up (decreasing r), black down
+
+  const addMove = (tr, tf) => {
+    if (tr < 0 || tr > 7 || tf < 0 || tf > 7) return false;
+    const target = _chBoard[tr][tf];
+    if (target && target.c === c) return false;
+    moves.push({r: tr, f: tf});
+    return !target; // false if blocked by any piece (capture stops sliding)
+  };
+
+  const slide = (dr, df) => {
+    let tr = r + dr, tf = f + df;
+    while (tr >= 0 && tr <= 7 && tf >= 0 && tf <= 7) {
+      const target = _chBoard[tr][tf];
+      if (target) { if (target.c !== c) moves.push({r:tr, f:tf}); break; }
+      moves.push({r:tr, f:tf});
+      tr += dr; tf += df;
+    }
+  };
+
+  switch (piece.t) {
+    case 'pawn':
+      // Forward
+      if (_chBoard[r+dir]?.[f] === null || _chBoard[r+dir]?.[f] === undefined) {
+        if (!_chBoard[r+dir][f]) {
+          moves.push({r: r+dir, f});
+          // Double push from starting rank
+          const startRank = c === 'white' ? 6 : 1;
+          if (r === startRank && !_chBoard[r+2*dir][f]) moves.push({r: r+2*dir, f});
+        }
+      }
+      // Captures
+      [-1, 1].forEach(df => {
+        const tr = r+dir, tf = f+df;
+        if (tr >= 0 && tr <= 7 && tf >= 0 && tf <= 7 && _chBoard[tr][tf]?.c === opp) moves.push({r:tr, f:tf});
+      });
+      break;
+    case 'knight':
+      [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]].forEach(([dr,df]) => addMove(r+dr, f+df));
+      break;
+    case 'bishop':
+      [[-1,-1],[-1,1],[1,-1],[1,1]].forEach(([dr,df]) => slide(dr,df));
+      break;
+    case 'rook':
+      [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr,df]) => slide(dr,df));
+      break;
+    case 'queen':
+      [[-1,-1],[-1,1],[1,-1],[1,1],[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr,df]) => slide(dr,df));
+      break;
+    case 'king':
+      [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([dr,df]) => addMove(r+dr, f+df));
+      // Castling (simplified: if king hasn't moved)
+      if (!piece.moved) {
+        if (!_chBoard[r][f+1] && !_chBoard[r][f+2] && _chBoard[r][7]?.t === 'rook' && !_chBoard[r][7].moved) moves.push({r, f:f+2, special:'castle-k'});
+        if (!_chBoard[r][f-1] && !_chBoard[r][f-2] && !_chBoard[r][f-3] && _chBoard[r][0]?.t === 'rook' && !_chBoard[r][0].moved) moves.push({r, f:f-2, special:'castle-q'});
+      }
+      break;
+  }
+  return moves;
+}
+
+function _chMakeMove(fr, ff, tr, tf) {
+  const ch = S.chess;
+  const piece = _chBoard[fr][ff];
+  const target = _chBoard[tr][tf];
+  const color = piece.c;
+
+  // Capture
+  if (target) {
+    const list = color === 'white' ? ch.capturedByWhite : ch.capturedByBlack;
+    if (!list) color === 'white' ? (ch.capturedByWhite = [target.t]) : (ch.capturedByBlack = [target.t]);
+    else list.push(target.t);
+  }
+
+  // Special: castling
+  const specialMove = _chLegalMoves.find(m => m.r === tr && m.f === tf)?.special;
+  if (specialMove === 'castle-k') {
+    _chBoard[fr][ff+1] = _chBoard[fr][7]; _chBoard[fr][7] = null;
+  } else if (specialMove === 'castle-q') {
+    _chBoard[fr][ff-1] = _chBoard[fr][0]; _chBoard[fr][0] = null;
+  }
+
+  // Move piece
+  piece.moved = true;
+  _chBoard[tr][tf] = piece;
+  _chBoard[fr][ff] = null;
+
+  // En passant (simplified visual)
+  // Pawn promotion
+  const promoteRank = color === 'white' ? 0 : 7;
+  if (piece.t === 'pawn' && tr === promoteRank) {
+    _chPromotionPending = {r: tr, f: tf, color};
+    _showPromotionPicker(color, tr, tf);
+    // Don't switch turn yet — wait for promotion choice
+    return;
+  }
+
+  // Auto-log the move in algebraic-ish notation
+  const files = 'abcdefgh';
+  const notation = _chBuildNotation(piece.t, fr, ff, tr, tf, !!target, !!specialMove);
+  ch.moves.push({ notation, color, isSpecial: !!specialMove, isCapture: !!target });
+
+  if (color === 'black') ch.moveCount++;
+  ch.currentTurn = color === 'white' ? 'black' : 'white';
+  ch.clockRunning = true;
+  if (ch.increment > 0) {
+    if (color === 'white') ch.clockWhite += ch.increment;
+    else ch.clockBlack += ch.increment;
+  }
+  if (!_chClockInterval && ch.timeControl !== 'none') startChessClock();
+
+  save();
+  renderChessLive();
+}
+
+function _chBuildNotation(type, fr, ff, tr, tf, isCapture, isCastle) {
+  const files = 'abcdefgh';
+  const dest = files[tf] + (8 - tr);
+  if (type === 'pawn') return isCapture ? `${files[ff]}x${dest}` : dest;
+  if (isCastle) return tf > ff ? 'O-O' : 'O-O-O';
+  const pieceChar = { knight:'N', bishop:'B', rook:'R', queen:'Q', king:'K' }[type] || '';
+  return pieceChar + (isCapture ? 'x' : '') + dest;
+}
+
+function _showPromotionPicker(color, r, f) {
+  const overlay = document.getElementById('ch-board-overlay');
+  if (!overlay) return;
+  const pieces = ['queen','rook','bishop','knight'];
+  const uni = CH_PIECE_UNICODE[color];
+  overlay.innerHTML = `
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:10;">
+      <div style="background:var(--surface);border:2px solid var(--chess-border,rgba(192,132,252,.4));border-radius:16px;padding:16px;text-align:center;">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;font-weight:800;">Choose promotion:</div>
+        <div style="display:flex;gap:8px;">
+          ${pieces.map(p => `<button onclick="_chPromote('${p}')" style="font-size:2.4rem;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;">${uni[p]}</button>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function _chPromote(piece) {
+  if (!_chPromotionPending) return;
+  const {r, f, color} = _chPromotionPending;
+  if (_chBoard[r][f]) _chBoard[r][f].t = piece;
+  _chPromotionPending = null;
+
+  const ch = S.chess;
+  const overlay = document.getElementById('ch-board-overlay');
+  if (overlay) overlay.innerHTML = '';
+
+  // Log promotion
+  const files = 'abcdefgh';
+  const notation = files[f] + (8 - r) + '=' + { queen:'Q', rook:'R', bishop:'B', knight:'N' }[piece];
+  ch.moves.push({ notation, color, isSpecial: true });
+  if (color === 'black') ch.moveCount++;
+  ch.currentTurn = color === 'white' ? 'black' : 'white';
+  ch.clockRunning = true;
+  if (!_chClockInterval && ch.timeControl !== 'none') startChessClock();
+
+  save();
+  renderChessLive();
+}
+
+// Wire up canvas click
+(function _initChessBoardEvents() {
+  const setup = () => {
+    const canvas = document.getElementById('ch-board');
+    if (canvas) {
+      canvas.addEventListener('click', _chBoardClick);
+      canvas.style.cursor = 'pointer';
+      // Touch support
+      canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const touch = e.changedTouches[0];
+        _chBoardClick(touch);
+      }, { passive: false });
+    }
+  };
+  // Try immediately and on DOMContentLoaded
+  setup();
+  document.addEventListener('DOMContentLoaded', setup);
+})();
+
+// Resize chess board canvas to fit container
+function _resizeChessCanvas() {
+  const canvas = document.getElementById('ch-board');
+  if (!canvas) return;
+  const wrap = canvas.parentElement;
+  if (!wrap) return;
+  const size = wrap.clientWidth;
+  if (size > 0 && canvas.width !== size) {
+    canvas.width = size;
+    canvas.height = size;
+    if (S.chess.matchStarted) _drawChessBoard();
+    else _drawChessBoard();
+  }
+}
+window.addEventListener('resize', _resizeChessCanvas);
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(_resizeChessCanvas, 100);
+  setTimeout(_resizeChessCanvas, 500);
+});
+
+
 load();
 applyTheme();
 checkRoomInviteUrl();
@@ -12807,7 +14401,7 @@ renderProfiles();
 // Only go directly into a sport if the hash matches e.g. #cricket
 (function initRoute() {
   const hash = window.location.hash.replace('#', '').toLowerCase();
-  const validSports = ['cricket', 'football', 'badminton'];
+  const validSports = ['cricket', 'football', 'badminton', 'pickleball', 'chess'];
   if (validSports.includes(hash)) {
     selectSport(hash);
   } else {
@@ -12845,6 +14439,13 @@ if (S.football.squad.length) renderFootballSquad();
 // Restore cricket players list
 if (S.cricket.players.length) renderCricketPlayersList();
 if (S.cricket.teamA.length) renderCricketTeams();
+
+// Draw initial chess board (decorative empty board)
+setTimeout(() => {
+  _resizeChessCanvas();
+  _drawChessBoard();
+}, 300);
+
 </script>
 </body>
 </html>
