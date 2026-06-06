@@ -285,138 +285,183 @@ header{
 .screen.active{display:block;}
 
 /* ═══════════════════════════════════════
-   WELCOME / SPORT GATEWAY
+   WELCOME / SPORT GATEWAY  (mobile-first compact)
 ═══════════════════════════════════════ */
 #screen-gateway{
   display:none;
-  padding:40px 20px 60px;
-  max-width:1100px;
+  padding:24px 16px 80px;
+  max-width:600px;
   margin:0 auto;
 }
 #screen-gateway.active{display:block;}
 .gateway-eyebrow{
   text-align:center;
-  font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--text3);margin-bottom:14px;
+  font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:10px;
 }
 .gateway-headline{
   font-family:'Barlow Condensed',sans-serif;
-  font-size:clamp(2.2rem,6vw,4rem);
+  font-size:clamp(1.8rem,5vw,3rem);
   font-weight:900;letter-spacing:-.01em;
   text-align:center;line-height:1.05;
-  margin-bottom:8px;
+  margin-bottom:4px;
 }
 .gateway-headline span{
   background:linear-gradient(90deg,#a78bfa,#38bdf8,#4ade80);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
 }
 .gateway-sub{
-  text-align:center;font-size:14px;color:var(--text3);margin-bottom:48px;
+  text-align:center;font-size:13px;color:var(--text3);margin-bottom:20px;
 }
+
+/* ── Sport pill row (horizontal scroll on mobile) ── */
+.gateway-pills{
+  display:flex;gap:8px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:4px;
+  margin-bottom:16px;justify-content:center;flex-wrap:wrap;
+}
+.gateway-pills::-webkit-scrollbar{display:none;}
+.gateway-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:999px;
+  font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  border:1px solid var(--border);background:var(--surface);
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:all .18s cubic-bezier(.34,1.56,.64,1);
+  -webkit-tap-highlight-color:transparent;
+}
+.gateway-pill:active{transform:scale(.94);}
+.gateway-pill i{font-size:14px;}
+.gateway-pill-cricket{color:var(--cricket-primary);}
+.gateway-pill-cricket:hover,.gateway-pill-cricket.selected{background:var(--cricket-pl);border-color:var(--cricket-border);box-shadow:0 0 16px var(--cricket-glow);}
+.gateway-pill-football{color:var(--football-primary);}
+.gateway-pill-football:hover,.gateway-pill-football.selected{background:var(--football-pl);border-color:var(--football-border);box-shadow:0 0 16px var(--football-glow);}
+.gateway-pill-badminton{color:var(--badminton-primary);}
+.gateway-pill-badminton:hover,.gateway-pill-badminton.selected{background:var(--badminton-pl);border-color:var(--badminton-border);box-shadow:0 0 16px var(--badminton-glow);}
+.gateway-pill-pickleball{color:var(--pickleball-primary);}
+.gateway-pill-pickleball:hover,.gateway-pill-pickleball.selected{background:var(--pickleball-pl);border-color:var(--pickleball-border);box-shadow:0 0 16px var(--pickleball-glow);}
+.gateway-pill-chess{color:var(--chess-primary);}
+.gateway-pill-chess:hover,.gateway-pill-chess.selected{background:var(--chess-pl);border-color:var(--chess-border);box-shadow:0 0 16px var(--chess-glow);}
+
+/* ── Main sport cards grid — 2-col on mobile, 3-col on tablet+ ── */
 .gateway-grid{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:16px;
-  max-width:1100px;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  max-width:600px;
   margin:0 auto;
 }
-/* On medium screens, show 3+2 */
-@media(max-width:900px){
+@media(min-width:520px){
   .gateway-grid{grid-template-columns:repeat(3,1fr);gap:14px;}
 }
+@media(min-width:900px){
+  .gateway-grid{grid-template-columns:repeat(5,1fr);gap:16px;}
+}
+
+/* The card itself — compact, horizontal layout on mobile */
 .sport-card{
   position:relative;overflow:hidden;
-  border-radius:28px;
+  border-radius:18px;
   border:1px solid var(--border);
   background:var(--surface);
   cursor:pointer;
-  transition:transform .22s cubic-bezier(.34,1.56,.64,1), border-color .22s, box-shadow .22s;
-  aspect-ratio:.75;
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  padding:24px 20px;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1), border-color .2s, box-shadow .2s;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:18px 12px 16px;
   box-shadow:var(--shadow);
+  min-height:110px;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
 }
 .sport-card::before{
   content:'';position:absolute;inset:0;
-  opacity:0;
-  transition:opacity .3s;
-  pointer-events:none;
+  opacity:0;transition:opacity .3s;pointer-events:none;
 }
-.sport-card::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.75) 100%);
-  pointer-events:none;
-}
-.sport-card:hover{transform:translateY(-6px) scale(1.01);}
-.sport-card-cricket::before{background:radial-gradient(ellipse at 50% 0%,rgba(239,68,68,.35) 0%,transparent 70%);}
-.sport-card-football::before{background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,.32) 0%,transparent 70%);}
-.sport-card-badminton::before{background:radial-gradient(ellipse at 50% 0%,rgba(250,204,21,.3) 0%,transparent 70%);}
-.sport-card-pickleball::before{background:radial-gradient(ellipse at 50% 0%,rgba(52,211,153,.3) 0%,transparent 70%);}
-.sport-card-chess::before{background:radial-gradient(ellipse at 50% 0%,rgba(192,132,252,.3) 0%,transparent 70%);}
+.sport-card:active{transform:scale(.96);}
+.sport-card:hover{transform:translateY(-3px) scale(1.02);}
+.sport-card-cricket::before{background:radial-gradient(ellipse at 50% 0%,rgba(239,68,68,.28) 0%,transparent 70%);}
+.sport-card-football::before{background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,.25) 0%,transparent 70%);}
+.sport-card-badminton::before{background:radial-gradient(ellipse at 50% 0%,rgba(250,204,21,.24) 0%,transparent 70%);}
+.sport-card-pickleball::before{background:radial-gradient(ellipse at 50% 0%,rgba(52,211,153,.24) 0%,transparent 70%);}
+.sport-card-chess::before{background:radial-gradient(ellipse at 50% 0%,rgba(192,132,252,.24) 0%,transparent 70%);}
 .sport-card:hover::before{opacity:1;}
-.sport-card:hover.sport-card-cricket{border-color:var(--cricket-border);box-shadow:0 0 0 1px var(--cricket-border),0 28px 80px var(--cricket-glow);}
-.sport-card:hover.sport-card-football{border-color:var(--football-border);box-shadow:0 0 0 1px var(--football-border),0 28px 80px var(--football-glow);}
-.sport-card:hover.sport-card-badminton{border-color:var(--badminton-border);box-shadow:0 0 0 1px var(--badminton-border),0 28px 80px var(--badminton-glow);}
-.sport-card:hover.sport-card-pickleball{border-color:var(--pickleball-border);box-shadow:0 0 0 1px var(--pickleball-border),0 28px 80px var(--pickleball-glow);}
-.sport-card:hover.sport-card-chess{border-color:var(--chess-border);box-shadow:0 0 0 1px var(--chess-border),0 28px 80px var(--chess-glow);}
+.sport-card:hover.sport-card-cricket{border-color:var(--cricket-border);box-shadow:0 0 0 1px var(--cricket-border),0 16px 40px var(--cricket-glow);}
+.sport-card:hover.sport-card-football{border-color:var(--football-border);box-shadow:0 0 0 1px var(--football-border),0 16px 40px var(--football-glow);}
+.sport-card:hover.sport-card-badminton{border-color:var(--badminton-border);box-shadow:0 0 0 1px var(--badminton-border),0 16px 40px var(--badminton-glow);}
+.sport-card:hover.sport-card-pickleball{border-color:var(--pickleball-border);box-shadow:0 0 0 1px var(--pickleball-border),0 16px 40px var(--pickleball-glow);}
+.sport-card:hover.sport-card-chess{border-color:var(--chess-border);box-shadow:0 0 0 1px var(--chess-border),0 16px 40px var(--chess-glow);}
+
+/* Icon circle — big + centered */
 .sport-card-icon{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-65%);
-  font-size:72px;opacity:.22;
-  transition:opacity .25s, transform .25s;
-  pointer-events:none;
-  filter:blur(1px);
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:10px;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1);
+  position:relative;z-index:1;flex-shrink:0;
 }
-.sport-card:hover .sport-card-icon{opacity:.38;transform:translate(-50%,-70%) scale(1.08);}
-.sport-card-cricket .sport-card-icon{color:var(--cricket-primary);}
-.sport-card-football .sport-card-icon{color:var(--football-primary);}
-.sport-card-badminton .sport-card-icon{color:var(--badminton-primary);}
-.sport-card-pickleball .sport-card-icon{color:var(--pickleball-primary);}
-.sport-card-chess .sport-card-icon{color:var(--chess-primary);}
+.sport-card:hover .sport-card-icon{transform:scale(1.12);}
+.sport-card-cricket .sport-card-icon{color:var(--cricket-primary);background:var(--cricket-pl);border:1px solid var(--cricket-border);}
+.sport-card-football .sport-card-icon{color:var(--football-primary);background:var(--football-pl);border:1px solid var(--football-border);}
+.sport-card-badminton .sport-card-icon{color:var(--badminton-primary);background:var(--badminton-pl);border:1px solid var(--badminton-border);}
+.sport-card-pickleball .sport-card-icon{color:var(--pickleball-primary);background:var(--pickleball-pl);border:1px solid var(--pickleball-border);}
+.sport-card-chess .sport-card-icon{color:var(--chess-primary);background:var(--chess-pl);border:1px solid var(--chess-border);}
+
 .sport-card-body{position:relative;z-index:1;text-align:center;width:100%;}
 .sport-card-label{
   font-family:'Barlow Condensed',sans-serif;
-  font-size:1.7rem;font-weight:900;letter-spacing:.04em;
+  font-size:1.1rem;font-weight:900;letter-spacing:.04em;
   text-transform:uppercase;line-height:1;
-  margin-bottom:6px;
+  margin-bottom:4px;
 }
 .sport-card-cricket .sport-card-label{color:var(--cricket-primary);}
 .sport-card-football .sport-card-label{color:var(--football-primary);}
 .sport-card-badminton .sport-card-label{color:var(--badminton-primary);}
 .sport-card-pickleball .sport-card-label{color:var(--pickleball-primary);}
 .sport-card-chess .sport-card-label{color:var(--chess-primary);}
-.sport-card-desc{font-size:12px;color:var(--text2);line-height:1.4;}
-.sport-card-cta{
-  margin-top:16px;
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 18px;border-radius:999px;
-  font-size:12px;font-weight:800;letter-spacing:.03em;
-  border:1px solid currentColor;
-  transition:background .18s;
-}
-.sport-card-cricket .sport-card-cta{color:var(--cricket-primary);}
-.sport-card-football .sport-card-cta{color:var(--football-primary);}
-.sport-card-badminton .sport-card-cta{color:var(--badminton-primary);}
-.sport-card-pickleball .sport-card-cta{color:var(--pickleball-primary);}
-.sport-card-chess .sport-card-cta{color:var(--chess-primary);}
-.sport-card:hover .sport-card-cricket .sport-card-cta,
-.sport-card-cricket:hover .sport-card-cta{background:rgba(239,68,68,.14);}
-.sport-card-football:hover .sport-card-cta{background:rgba(34,197,94,.14);}
-.sport-card-badminton:hover .sport-card-cta{background:rgba(250,204,21,.14);}
-.sport-card-pickleball:hover .sport-card-cta{background:rgba(52,211,153,.14);}
-.sport-card-chess:hover .sport-card-cta{background:rgba(192,132,252,.14);}
+.sport-card-desc{font-size:10px;color:var(--text3);line-height:1.35;}
+.sport-card-cta{display:none;}
+
 /* Glowing dot */
 .sport-card-dot{
-  position:absolute;top:20px;right:20px;width:10px;height:10px;
+  position:absolute;top:10px;right:10px;width:7px;height:7px;
   border-radius:50%;
   animation:pulseGlow 2.4s ease-in-out infinite;
 }
-.sport-card-cricket .sport-card-dot{background:var(--cricket-primary);box-shadow:0 0 12px var(--cricket-glow);}
-.sport-card-football .sport-card-dot{background:var(--football-primary);box-shadow:0 0 12px var(--football-glow);}
-.sport-card-badminton .sport-card-dot{background:var(--badminton-primary);box-shadow:0 0 12px var(--badminton-glow);}
-.sport-card-pickleball .sport-card-dot{background:var(--pickleball-primary);box-shadow:0 0 12px var(--pickleball-glow);}
-.sport-card-chess .sport-card-dot{background:var(--chess-primary);box-shadow:0 0 12px var(--chess-glow);}
-@keyframes pulseGlow{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.35);}}
+.sport-card-cricket .sport-card-dot{background:var(--cricket-primary);box-shadow:0 0 8px var(--cricket-glow);}
+.sport-card-football .sport-card-dot{background:var(--football-primary);box-shadow:0 0 8px var(--football-glow);}
+.sport-card-badminton .sport-card-dot{background:var(--badminton-primary);box-shadow:0 0 8px var(--badminton-glow);}
+.sport-card-pickleball .sport-card-dot{background:var(--pickleball-primary);box-shadow:0 0 8px var(--pickleball-glow);}
+.sport-card-chess .sport-card-dot{background:var(--chess-primary);box-shadow:0 0 8px var(--chess-glow);}
+@keyframes pulseGlow{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.4);}}
+
+/* ── "Last played" quick-access row ── */
+.gateway-recent{
+  margin-top:20px;
+  padding:14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+.gateway-recent-title{
+  font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--text3);margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;
+}
+.gateway-recent-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.gateway-quick-btns{
+  display:flex;gap:8px;flex-wrap:wrap;
+}
+.gateway-quick-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:10px;
+  font-size:11px;font-weight:800;letter-spacing:.03em;
+  border:1px solid var(--border);background:var(--surface-2);
+  cursor:pointer;color:var(--text2);
+  transition:all .15s;flex:1;min-width:0;justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.gateway-quick-btn:active{transform:scale(.93);}
 
 /* ═══════════════════════════════════════
    MAIN APP LAYOUT (after sport selected)
@@ -2072,9 +2117,6 @@ select option{background:var(--surface-2);color:var(--text);}
   .score-btns{grid-template-columns:repeat(4,1fr);}
   .fb-goal-section{gap:8px;}
   .bd-score{font-size:4.5rem;}
-  .gateway-grid{grid-template-columns:repeat(2,1fr);}
-  .sport-card{aspect-ratio:1.1;}
-  .sport-card-icon{font-size:52px;transform:translate(-50%,-60%);}
   /* Better touch targets on small phones */
   .score-btn{min-height:58px;}
   .btn{min-height:40px;}
@@ -2082,8 +2124,9 @@ select option{background:var(--surface-2);color:var(--text);}
   .modal-box{padding:16px;}
   .app-wrap{padding:12px 10px 10px;}
 }
-@media(max-width:420px){
-  .gateway-grid{grid-template-columns:1fr;}
+@media(max-width:380px){
+  .gateway-grid{grid-template-columns:repeat(2,1fr);}
+  .sport-card{min-height:96px;}
 }
 
 /* ═══════════════════════════════════════
@@ -4444,7 +4487,28 @@ input:focus, select:focus, textarea:focus {
 <div id="screen-gateway" class="screen active">
   <p class="gateway-eyebrow">Multi-Sport Scoring Hub</p>
   <h1 class="gateway-headline">Choose Your <span>Arena</span></h1>
-  <p class="gateway-sub">Select a sport to begin scoring, tracking, and sharing live matches.</p>
+  <p class="gateway-sub">Tap any sport to start scoring.</p>
+
+  <!-- ── Quick-filter pills ── -->
+  <div class="gateway-pills">
+    <div class="gateway-pill gateway-pill-cricket" onclick="selectSport('cricket')">
+      <i class="ti ti-cricket"></i> Cricket
+    </div>
+    <div class="gateway-pill gateway-pill-football" onclick="selectSport('football')">
+      <i class="ti ti-ball-football"></i> Football
+    </div>
+    <div class="gateway-pill gateway-pill-badminton" onclick="selectSport('badminton')">
+      <i class="ti ti-ping-pong"></i> Badminton
+    </div>
+    <div class="gateway-pill gateway-pill-pickleball" onclick="selectSport('pickleball')">
+      <i class="ti ti-tennis"></i> Pickleball
+    </div>
+    <div class="gateway-pill gateway-pill-chess" onclick="selectSport('chess')">
+      <i class="ti ti-chess-knight"></i> Chess
+    </div>
+  </div>
+
+  <!-- ── Sport cards grid ── -->
   <div class="gateway-grid">
 
     <!-- CRICKET -->
@@ -4453,8 +4517,7 @@ input:focus, select:focus, textarea:focus {
       <div class="sport-card-icon"><i class="ti ti-cricket"></i></div>
       <div class="sport-card-body">
         <div class="sport-card-label">Cricket</div>
-        <div class="sport-card-desc">Ball-by-ball scoring, toss, innings tracker, and live commentary.</div>
-        <div class="sport-card-cta"><i class="ti ti-arrow-right"></i> Enter Arena</div>
+        <div class="sport-card-desc">Ball-by-ball, innings &amp; live commentary</div>
       </div>
     </div>
 
@@ -4464,8 +4527,7 @@ input:focus, select:focus, textarea:focus {
       <div class="sport-card-icon"><i class="ti ti-ball-football"></i></div>
       <div class="sport-card-body">
         <div class="sport-card-label">Football</div>
-        <div class="sport-card-desc">Match timer, goal counters, yellow/red cards, and foul tracking.</div>
-        <div class="sport-card-cta"><i class="ti ti-arrow-right"></i> Enter Arena</div>
+        <div class="sport-card-desc">Goals, cards, timer &amp; foul tracking</div>
       </div>
     </div>
 
@@ -4475,8 +4537,7 @@ input:focus, select:focus, textarea:focus {
       <div class="sport-card-icon"><i class="ti ti-ping-pong"></i></div>
       <div class="sport-card-body">
         <div class="sport-card-label">Badminton</div>
-        <div class="sport-card-desc">Points up to 21, best-of-3 sets, large touch targets for umpires.</div>
-        <div class="sport-card-cta"><i class="ti ti-arrow-right"></i> Enter Arena</div>
+        <div class="sport-card-desc">Points to 21, best-of-3 sets</div>
       </div>
     </div>
 
@@ -4486,8 +4547,7 @@ input:focus, select:focus, textarea:focus {
       <div class="sport-card-icon"><i class="ti ti-tennis"></i></div>
       <div class="sport-card-body">
         <div class="sport-card-label">Pickleball</div>
-        <div class="sport-card-desc">Rally scoring, kitchen faults, serve rules — full dink-to-smash tracking.</div>
-        <div class="sport-card-cta"><i class="ti ti-arrow-right"></i> Enter Arena</div>
+        <div class="sport-card-desc">Rally scoring &amp; kitchen faults</div>
       </div>
     </div>
 
@@ -4497,10 +4557,15 @@ input:focus, select:focus, textarea:focus {
       <div class="sport-card-icon"><i class="ti ti-chess-knight"></i></div>
       <div class="sport-card-body">
         <div class="sport-card-label">Chess</div>
-        <div class="sport-card-desc">Tournament clock, move log, material tracker &amp; chess.com-style board.</div>
-        <div class="sport-card-cta"><i class="ti ti-arrow-right"></i> Enter Arena</div>
+        <div class="sport-card-desc">Clock, move log &amp; chess.com board</div>
       </div>
     </div>
+  </div>
+
+  <!-- ── Recent / quick access ── -->
+  <div class="gateway-recent" id="gateway-recent-section" style="display:none;">
+    <div class="gateway-recent-title"><i class="ti ti-history" style="font-size:11px;"></i> Jump back in</div>
+    <div class="gateway-quick-btns" id="gateway-quick-btns"></div>
   </div>
 </div>
 
@@ -6796,6 +6861,8 @@ function goHome() {
   if (window.history && window.history.pushState) {
     history.pushState({ home: true }, '', window.location.pathname);
   }
+  // Refresh the "Jump back in" strip
+  renderGatewayRecent();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -14449,6 +14516,40 @@ renderHistory();
 renderGallery();
 renderLibrary();
 renderProfiles();
+renderGatewayRecent();
+
+// ── Gateway "Jump back in" recent sports ──
+function renderGatewayRecent() {
+  const section = document.getElementById('gateway-recent-section');
+  const btns = document.getElementById('gateway-quick-btns');
+  if (!section || !btns) return;
+
+  // Find the last-played sport from history
+  const sports = ['cricket','football','badminton','pickleball','chess'];
+  const sportIcons = {cricket:'ti-cricket',football:'ti-ball-football',badminton:'ti-ping-pong',pickleball:'ti-tennis',chess:'ti-chess-knight'};
+  const sportColors = {cricket:'var(--cricket-primary)',football:'var(--football-primary)',badminton:'var(--badminton-primary)',pickleball:'var(--pickleball-primary)',chess:'var(--chess-primary)'};
+  const sportBg = {cricket:'var(--cricket-pl)',football:'var(--football-pl)',badminton:'var(--badminton-pl)',pickleball:'var(--pickleball-pl)',chess:'var(--chess-pl)'};
+
+  // Get unique sports played recently (max 3)
+  const seen = new Set();
+  const recentSports = [];
+  (S.history || []).forEach(m => {
+    if (m.sport && sports.includes(m.sport) && !seen.has(m.sport)) {
+      seen.add(m.sport);
+      recentSports.push(m.sport);
+    }
+  });
+
+  if (!recentSports.length) { section.style.display = 'none'; return; }
+  section.style.display = '';
+
+  btns.innerHTML = recentSports.slice(0,3).map(sp => `
+    <button class="gateway-quick-btn" onclick="selectSport('${sp}')"
+      style="color:${sportColors[sp]};background:${sportBg[sp]};border-color:${sportColors[sp]}22;">
+      <i class="ti ${sportIcons[sp]}" style="font-size:15px;"></i>
+      ${sp.charAt(0).toUpperCase()+sp.slice(1)}
+    </button>`).join('');
+}
 
 // ── URL / hash routing ──
 // The gateway IS the home page. If the URL has no hash (or #home), always show gateway.
