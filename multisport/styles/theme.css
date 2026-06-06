@@ -1,0 +1,384 @@
+/* ══════════════════════════════════════════
+   LIGHT THEME — override ALL dark glass rules
+══════════════════════════════════════════ */
+:root[data-theme='light'] body {
+  background: var(--bg) !important;
+}
+:root[data-theme='light'] body::after {
+  background:
+    radial-gradient(ellipse 55% 40% at 15% 10%, rgba(99,102,241,.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 45% at 85% 5%,  rgba(167,139,250,.07) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 50% 95%, rgba(56,189,248,.07)  0%, transparent 60%);
+}
+/* Header */
+:root[data-theme='light'] header {
+  background: rgba(255,255,255,.92) !important;
+  border-bottom: 1px solid rgba(99,102,241,.12) !important;
+  box-shadow: 0 2px 16px rgba(15,23,42,.08) !important;
+}
+/* Cards */
+:root[data-theme='light'] .card,
+:root[data-theme='light'] .sport-card,
+:root[data-theme='light'] .modal-box,
+:root[data-theme='light'] .more-panel {
+  background: rgba(255,255,255,.92) !important;
+  border: 1px solid rgba(99,102,241,.12) !important;
+  box-shadow: 0 2px 12px rgba(15,23,42,.08) !important;
+}
+:root[data-theme='light'] .card::after {
+  background: linear-gradient(135deg, rgba(99,102,241,.04), transparent 45%) !important;
+}
+/* Tab bar */
+:root[data-theme='light'] .tab-bar {
+  background: rgba(255,255,255,.95) !important;
+  border: 1px solid rgba(99,102,241,.13) !important;
+  box-shadow: 0 -2px 16px rgba(15,23,42,.08) !important;
+}
+/* Buttons */
+:root[data-theme='light'] .btn {
+  background: rgba(255,255,255,.9) !important;
+  border: 1px solid rgba(99,102,241,.18) !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,.07) !important;
+  color: var(--text) !important;
+}
+:root[data-theme='light'] .btn:hover {
+  background: rgba(240,245,255,.98) !important;
+  box-shadow: 0 2px 8px rgba(15,23,42,.10) !important;
+  transform: translateY(-1px) !important;
+}
+:root[data-theme='light'] .btn.primary {
+  color: #fff !important;
+}
+:root[data-theme='light'] .btn.success {
+  color: #fff !important;
+}
+/* Score buttons */
+:root[data-theme='light'] .score-btn {
+  background: rgba(255,255,255,.85) !important;
+  border: 1px solid rgba(99,102,241,.14) !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,.07) !important;
+  color: var(--text) !important;
+}
+:root[data-theme='light'] .score-btn:hover {
+  background: rgba(240,245,255,.98) !important;
+  border-color: var(--sport-primary-m) !important;
+}
+:root[data-theme='light'] .score-btn.r6 {
+  background: var(--sport-primary-l) !important;
+  border-color: var(--sport-primary-m) !important;
+}
+:root[data-theme='light'] .score-btn.wkt {
+  background: rgba(248,113,113,.1) !important;
+  border-color: rgba(248,113,113,.3) !important;
+}
+/* Inputs */
+:root[data-theme='light'] input[type=text],
+:root[data-theme='light'] input[type=number],
+:root[data-theme='light'] input[type=password],
+:root[data-theme='light'] select,
+:root[data-theme='light'] textarea {
+  background: #fff !important;
+  border: 1px solid rgba(99,102,241,.2) !important;
+  box-shadow: none !important;
+  color: var(--text) !important;
+}
+:root[data-theme='light'] input:focus,
+:root[data-theme='light'] select:focus,
+:root[data-theme='light'] textarea:focus {
+  background: #fff !important;
+  border-color: var(--sport-primary-m) !important;
+  box-shadow: 0 0 0 3px var(--sport-primary-l) !important;
+}
+/* Modal */
+:root[data-theme='light'] .modal-box {
+  background: rgba(255,255,255,.98) !important;
+  box-shadow: 0 8px 40px rgba(15,23,42,.15) !important;
+}
+/* More panel items */
+:root[data-theme='light'] .more-panel {
+  background: rgba(255,255,255,.98) !important;
+}
+:root[data-theme='light'] .more-item {
+  background: rgba(248,250,255,.95) !important;
+  border: 1px solid rgba(99,102,241,.10) !important;
+}
+:root[data-theme='light'] .more-item:hover {
+  background: rgba(238,245,255,.98) !important;
+}
+/* Badminton player panels */
+:root[data-theme='light'] .bd-player {
+  background: rgba(255,255,255,.92) !important;
+  border: 1px solid rgba(99,102,241,.13) !important;
+  box-shadow: 0 2px 8px rgba(15,23,42,.07) !important;
+}
+/* History items */
+:root[data-theme='light'] .history-item {
+  background: rgba(255,255,255,.90) !important;
+  border: 1px solid rgba(99,102,241,.10) !important;
+}
+:root[data-theme='light'] .history-item:hover {
+  background: rgba(240,245,255,.98) !important;
+}
+/* Library cards */
+:root[data-theme='light'] .library-card {
+  background: rgba(255,255,255,.90) !important;
+  border: 1px solid rgba(99,102,241,.10) !important;
+}
+/* Team panels */
+:root[data-theme='light'] .team-panel {
+  background: rgba(255,255,255,.90) !important;
+  border: 1px solid rgba(99,102,241,.10) !important;
+}
+/* Commentary */
+:root[data-theme='light'] .commentary-item {
+  background: rgba(248,250,255,.95) !important;
+  border: 1px solid rgba(99,102,241,.09) !important;
+}
+/* Calendar */
+:root[data-theme='light'] .cal-card {
+  background: rgba(255,255,255,.92) !important;
+  border: 1px solid rgba(99,102,241,.12) !important;
+  box-shadow: 0 2px 12px rgba(15,23,42,.08) !important;
+}
+/* Win prediction bar */
+:root[data-theme='light'] .win-pred-bar-track {
+  background: rgba(15,23,42,.08) !important;
+  border: 1px solid rgba(99,102,241,.12) !important;
+}
+/* Toast */
+:root[data-theme='light'] .toast {
+  background: rgba(255,255,255,.97) !important;
+  border: 1px solid rgba(99,102,241,.15) !important;
+  box-shadow: 0 4px 20px rgba(15,23,42,.12) !important;
+  color: var(--text) !important;
+}
+/* Header sport badge */
+:root[data-theme='light'] .header-sport-badge {
+  background: var(--sport-primary-l) !important;
+  border: 1px solid var(--sport-border) !important;
+}
+/* Theme toggle button */
+:root[data-theme='light'] .theme-toggle-btn {
+  background: rgba(255,255,255,.9) !important;
+  border: 1px solid rgba(99,102,241,.18) !important;
+}
+/* Mode badge */
+:root[data-theme='light'] .mode-badge {
+  backdrop-filter: none !important;
+}
+/* Surface overrides for inline-styled room/lobby panels */
+:root[data-theme='light'] .room-entry-sheet,
+:root[data-theme='light'] .room-sheet,
+:root[data-theme='light'] .room-setup-modal,
+:root[data-theme='light'] .more-panel,
+:root[data-theme='light'] .msummary-sheet,
+:root[data-theme='light'] .motm-modal-wrap,
+:root[data-theme='light'] .mots-modal-wrap,
+:root[data-theme='light'] .ach-sheet {
+  background: rgba(255,255,255,.98) !important;
+  border-color: rgba(99,102,241,.12) !important;
+}
+
+
+/* ═══ COMPREHENSIVE LIGHT MODE FIXES ═══ */
+
+/* Room overlay backgrounds */
+:root[data-theme='light'] .room-entry-overlay,
+:root[data-theme='light'] .room-overlay,
+:root[data-theme='light'] .room-setup-modal-overlay,
+:root[data-theme='light'] .more-overlay,
+:root[data-theme='light'] .modal-overlay,
+:root[data-theme='light'] .msummary-overlay,
+:root[data-theme='light'] .ach-sheet-overlay {
+  background: rgba(15,23,42,.35) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* Room lobby / member list / audit log inner surfaces */
+:root[data-theme='light'] .room-lobby,
+:root[data-theme='light'] .room-member-list,
+:root[data-theme='light'] #room-member-list,
+:root[data-theme='light'] #audit-log-wrap,
+:root[data-theme='light'] #room-section-members {
+  background: rgba(248,250,255,.95) !important;
+  border: 1px solid rgba(99,102,241,.10) !important;
+  border-radius: 12px;
+}
+:root[data-theme='light'] .room-member-row {
+  border-bottom: 1px solid rgba(99,102,241,.08) !important;
+}
+:root[data-theme='light'] .audit-row {
+  border-top: 1px solid rgba(99,102,241,.08) !important;
+}
+:root[data-theme='light'] .room-member-avatar {
+  background: var(--sport-primary-l) !important;
+  border-color: var(--sport-border) !important;
+  color: var(--sport-primary) !important;
+}
+:root[data-theme='light'] .room-member-name { color: var(--text) !important; }
+:root[data-theme='light'] .room-role-badge {
+  background: rgba(99,102,241,.1) !important;
+  color: var(--text2) !important;
+  border-color: rgba(99,102,241,.2) !important;
+}
+:root[data-theme='light'] .room-role-badge.host { background:rgba(167,139,250,.15)!important; color:#7c3aed!important; }
+:root[data-theme='light'] .room-role-badge.scorer { background:rgba(56,189,248,.12)!important; color:#0369a1!important; }
+:root[data-theme='light'] .room-role-badge.viewer { background:rgba(148,163,184,.12)!important; color:#475569!important; }
+
+/* Room entry buttons */
+:root[data-theme='light'] .room-entry-btn {
+  background: rgba(248,250,255,.95) !important;
+  border: 1px solid rgba(99,102,241,.14) !important;
+  color: var(--text) !important;
+}
+:root[data-theme='light'] .room-entry-btn:hover { background: rgba(238,245,255,.98) !important; }
+:root[data-theme='light'] .room-entry-btn-label { color: var(--text) !important; }
+:root[data-theme='light'] .room-entry-btn-desc { color: var(--text3) !important; }
+:root[data-theme='light'] .room-entry-header { background: rgba(248,250,255,.98) !important; }
+:root[data-theme='light'] .room-entry-title { color: var(--text) !important; }
+:root[data-theme='light'] .room-entry-sub { color: var(--text3) !important; }
+
+/* Room choice cards (create/join) */
+:root[data-theme='light'] .room-choice-card {
+  background: rgba(248,250,255,.95) !important;
+  border: 1px solid rgba(99,102,241,.14) !important;
+  color: var(--text) !important;
+}
+:root[data-theme='light'] .room-choice-title { color: var(--text) !important; }
+:root[data-theme='light'] .room-choice-sub   { color: var(--text3) !important; }
+
+/* Photo crop modal */
+:root[data-theme='light'] #photo-crop-modal {
+  background: rgba(15,23,42,.4) !important;
+}
+:root[data-theme='light'] .photo-sheet {
+  background: rgba(255,255,255,.98) !important;
+  border: 1px solid rgba(99,102,241,.14) !important;
+}
+
+/* Room setup modal inner content */
+:root[data-theme='light'] .room-setup-modal-header {
+  background: rgba(238,245,255,.95) !important;
+}
+
+/* Tab bar and section backgrounds */
+:root[data-theme='light'] .section,
+:root[data-theme='light'] .app-wrap { background: transparent; }
+
+/* Surface-2 override for all inline-styled panels with dark bg */
+:root[data-theme='light'] [style*="background:var(--surface-2)"],
+:root[data-theme='light'] [style*="background: var(--surface-2)"] {
+  background: rgba(248,250,255,.95) !important;
+}
+:root[data-theme='light'] [style*="background:var(--surface)"],
+:root[data-theme='light'] [style*="background: var(--surface)"] {
+  background: rgba(255,255,255,.97) !important;
+}
+
+/* Mode badge light fixes */
+:root[data-theme='light'] .mode-scorer {
+  background: rgba(56,189,248,.12) !important;
+  color: #0369a1 !important;
+  border-color: rgba(56,189,248,.3) !important;
+}
+:root[data-theme='light'] .mode-viewer {
+  background: rgba(245,158,11,.12) !important;
+  color: #92400e !important;
+  border-color: rgba(245,158,11,.3) !important;
+}
+
+/* Theme toggle in light */
+:root[data-theme='light'] .theme-toggle-btn {
+  background: rgba(255,255,255,.9) !important;
+  border: 1px solid rgba(99,102,241,.18) !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,.08) !important;
+}
+
+/* header-back-btn and header-logo in light */
+:root[data-theme='light'] .header-back-btn {
+  background: rgba(248,250,255,.95) !important;
+  border-color: rgba(99,102,241,.14) !important;
+  color: var(--text2) !important;
+}
+
+/* Viewer overlay */
+:root[data-theme='light'] .viewer-overlay {
+  background: rgba(245,158,11,.1) !important;
+  border-bottom: 1px solid rgba(245,158,11,.2) !important;
+  color: #92400e !important;
+}
+
+/* Room connection bar */
+:root[data-theme='light'] #room-connection-bar {
+  background: rgba(239,68,68,.08) !important;
+  color: #b91c1c !important;
+  border-bottom: 1px solid rgba(239,68,68,.2) !important;
+}
+
+/* Room code display */
+:root[data-theme='light'] .room-code-display {
+  background: rgba(248,250,255,.97) !important;
+  border-color: rgba(99,102,241,.15) !important;
+}
+:root[data-theme='light'] .room-code-value { color: var(--text) !important; }
+:root[data-theme='light'] .room-code-copy  { color: var(--text3) !important; }
+:root[data-theme='light'] .room-invite-link {
+  background: rgba(248,250,255,.95) !important;
+  border-color: rgba(99,102,241,.12) !important;
+  color: var(--text2) !important;
+}
+
+/* Status pill */
+:root[data-theme='light'] #room-status-pill {
+  background: rgba(16,185,129,.12) !important;
+  border-color: rgba(16,185,129,.3) !important;
+}
+
+/* input.room-code-input (big code input in join flow) */
+:root[data-theme='light'] .room-code-input {
+  background: #fff !important;
+  border: 1.5px solid rgba(99,102,241,.22) !important;
+  color: var(--text) !important;
+}
+
+/* Settings rows */
+:root[data-theme='light'] .settings-row { background: rgba(248,250,255,.95) !important; border-color: rgba(99,102,241,.10) !important; }
+:root[data-theme='light'] .settings-row-label { color: var(--text) !important; }
+:root[data-theme='light'] .settings-row-sub   { color: var(--text3) !important; }
+
+/* House rules */
+:root[data-theme='light'] .house-rule-row { background: rgba(248,250,255,.95) !important; border-color: rgba(99,102,241,.10) !important; }
+
+/* Points table rows */
+:root[data-theme='light'] .pts-row { background: rgba(248,250,255,.95) !important; }
+:root[data-theme='light'] .pts-row:nth-child(even) { background: rgba(240,245,255,.95) !important; }
+
+/* Cricket player rows */
+:root[data-theme='light'] .cricket-player-row {
+  background: rgba(248,250,255,.95) !important;
+  border-color: rgba(99,102,241,.09) !important;
+}
+:root[data-theme='light'] .cricket-player-row:hover { background: rgba(238,245,255,.98) !important; }
+
+/* Badminton score area */
+:root[data-theme='light'] .bd-score-panel {
+  background: rgba(255,255,255,.95) !important;
+  border-color: rgba(99,102,241,.12) !important;
+}
+
+/* series board */
+:root[data-theme='light'] .series-board {
+  background: rgba(248,250,255,.97) !important;
+  border-color: rgba(99,102,241,.12) !important;
+}
+
+/* fb-squad rows */
+:root[data-theme='light'] .squad-row {
+  background: rgba(248,250,255,.95) !important;
+  border-color: rgba(99,102,241,.09) !important;
+}
+
+/* profile-stat-box (already overridden above but ensure text) */
+:root[data-theme='light'] .profile-stat-val { color: var(--text) !important; }
+:root[data-theme='light'] .profile-stat-label { color: var(--text3) !important; }
