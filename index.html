@@ -1,0 +1,2282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#03060c"/>
+<title>Arena · Your Squad's Scorebook</title>
+  <meta name="description" content="Track every match, every win, every stat with your squad. Cricket, Football, Badminton, Pickleball and Chess — all in one place.">
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Arena">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet"/>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   ROOM SYSTEM CSS
+═══════════════════════════════════════════════════ */
+
+/* ── Room Entry Popup (shown on sport select) ── */
+.room-entry-overlay{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(0,0,0,.88);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+.room-entry-overlay.visible{opacity:1;pointer-events:all;}
+.room-entry-sheet{
+  width:min(500px,100%);
+  border-radius:28px 28px 0 0;
+  overflow:hidden;
+  max-height:90vh;overflow-y:auto;
+  transform:translateY(102%);
+  transition:transform .45s cubic-bezier(.32,1.4,.5,1);
+  /* Keep within safe area */
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.room-entry-overlay.visible .room-entry-sheet{transform:translateY(0);}
+
+/* Header gradient per sport */
+.room-entry-header{
+  padding:24px 22px 20px;
+  position:relative;overflow:hidden;
+}
+.room-entry-header::before{
+  content:'';position:absolute;inset:0;
+  opacity:.12;
+  background:radial-gradient(ellipse 80% 100% at 50% 0%,var(--sport-primary),transparent);
+}
+.room-entry-sport-chip{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--sport-primary-l);border:1px solid var(--sport-primary-m);
+  border-radius:999px;padding:5px 14px;
+  font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--sport-primary);
+  margin-bottom:14px;position:relative;z-index:1;
+}
+.room-entry-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:2rem;font-weight:900;line-height:1.1;
+  color:#fff;position:relative;z-index:1;
+  margin-bottom:4px;
+}
+.room-entry-sub{
+  font-size:12px;color:rgba(255,255,255,.5);
+  position:relative;z-index:1;
+}
+.room-entry-close-btn{
+  position:absolute;top:14px;right:14px;
+  width:30px;height:30px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.55);
+  font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:all .15s;
+  z-index:2;
+  -webkit-tap-highlight-color:transparent;
+}
+.room-entry-close-btn:hover{
+  background:rgba(255,255,255,.14);
+  color:#fff;
+}
+.room-entry-close-btn:active{ transform:scale(.9); }
+:root[data-theme='light'] .room-entry-close-btn{
+  background:rgba(15,23,42,.06);
+  border-color:rgba(15,23,42,.12);
+  color:rgba(15,23,42,.5);
+}
+:root[data-theme='light'] .room-entry-close-btn:hover{
+  background:rgba(15,23,42,.1);
+  color:var(--text);
+}
+
+/* Choices */
+.room-entry-choices{
+  padding:0 16px 16px;
+  display:flex;flex-direction:column;gap:10px;
+  background:var(--surface-1);
+}
+
+.room-entry-btn{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 18px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:var(--surface-2);
+  cursor:pointer;
+  transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+  text-align:left;width:100%;
+}
+.room-entry-btn:active{transform:scale(.98);}
+.room-entry-btn.solo{
+  border-color:var(--border);
+  background:var(--surface-2);
+}
+.room-entry-btn.create{
+  border-color:rgba(99,102,241,.4);
+  background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(99,102,241,.06));
+}
+.room-entry-btn.join{
+  border-color:rgba(16,185,129,.4);
+  background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(16,185,129,.06));
+}
+.room-entry-btn-icon{
+  width:46px;height:46px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.room-entry-btn.solo .room-entry-btn-icon{background:rgba(255,255,255,.07);color:var(--text2);}
+.room-entry-btn.create .room-entry-btn-icon{background:rgba(99,102,241,.2);color:#818cf8;}
+.room-entry-btn.join .room-entry-btn-icon{background:rgba(16,185,129,.2);color:#10b981;}
+.room-entry-btn-text{}
+.room-entry-btn-label{
+  font-size:15px;font-weight:800;color:#fff;margin-bottom:2px;
+}
+.room-entry-btn-desc{font-size:11px;color:var(--text3);}
+.room-entry-btn-arrow{
+  margin-left:auto;color:var(--text3);font-size:18px;flex-shrink:0;
+}
+
+/* Inline join input inside sheet */
+.room-join-inline{
+  display:none;
+  flex-direction:column;gap:10px;
+  padding:12px 0 0;
+  animation:fadeInUp .25s ease;
+}
+.room-join-inline.visible{display:flex;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* Setup link */
+.room-setup-link{
+  text-align:center;padding:10px 16px 20px;
+  font-size:11px;color:var(--text3);
+  background:var(--surface-1);
+}
+.room-setup-link a{color:var(--sport-primary);text-decoration:none;font-weight:700;}
+/* ── Room Setup Modal ── */
+.room-setup-modal-overlay{
+  position:fixed;inset:0;z-index:700;
+  background:rgba(0,0,0,.88);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s ease;
+}
+.room-setup-modal-overlay.visible{opacity:1;pointer-events:all;}
+.room-setup-modal{
+  width:min(460px,100%);
+  background:var(--surface-1);
+  border:1px solid var(--border);
+  border-radius:24px;
+  overflow:hidden;
+  transform:scale(.94) translateY(12px);
+  transition:transform .3s cubic-bezier(.32,1.4,.5,1);
+}
+.room-setup-modal-overlay.visible .room-setup-modal{transform:scale(1) translateY(0);}
+.room-setup-modal-header{
+  padding:20px 22px 16px;
+  background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(16,185,129,.07));
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+}
+.room-setup-modal-icon{
+  width:44px;height:44px;border-radius:14px;
+  background:rgba(99,102,241,.18);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:#818cf8;flex-shrink:0;
+}
+.room-setup-modal-close{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:10px;width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text3);font-size:16px;flex-shrink:0;
+}
+.room-setup-modal-body{padding:20px 22px 24px;display:flex;flex-direction:column;gap:14px;}
+.room-setup-sql{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:12px;padding:12px;
+  font-size:9.5px;line-height:1.7;color:var(--text2);
+  max-height:160px;overflow-y:auto;
+  font-family:'Courier New',monospace;white-space:pre-wrap;word-break:break-all;
+}
+
+
+/* Supabase config banner removed */
+/* ── Room nav pill ── */
+#room-status-pill{
+  display:none;position:fixed;top:10px;right:10px;z-index:400;
+  background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.4);
+  border-radius:999px;padding:4px 10px 4px 7px;
+  align-items:center;gap:5px;
+  font-size:10px;font-weight:800;color:#10b981;
+  cursor:pointer;backdrop-filter:blur(8px);
+  animation:roomPillPulse 2s ease-in-out infinite;
+}
+#room-status-pill.active{display:flex;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes roomPillPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.3);}
+  50%{box-shadow:0 0 0 6px rgba(16,185,129,.0);}
+}
+#room-status-pill .pill-dot{
+  width:6px;height:6px;border-radius:50%;background:#10b981;
+  animation:dotBlink 1.2s ease-in-out infinite;
+}
+@keyframes dotBlink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── Room section ── */
+
+
+/* ── Room overlay (create/join modal) ── */
+.room-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(16px);
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+.room-overlay.visible{opacity:1;pointer-events:all;}
+.room-sheet{
+  width:min(480px,100%);
+  background:var(--surface-1);
+  border-radius:24px 24px 0 0;
+  border:1px solid var(--border);
+  border-bottom:none;
+  transform:translateY(100%);
+  transition:transform .4s cubic-bezier(.32,1.4,.5,1);
+  overflow:hidden;
+  max-height:92vh;overflow-y:auto;
+}
+.room-overlay.visible .room-sheet{transform:translateY(0);}
+.room-sheet-handle{
+  width:36px;height:4px;border-radius:2px;
+  background:var(--border);margin:12px auto 0;
+}
+.room-sheet-body{ padding:20px 20px 32px; }
+
+/* Room cards grid */
+.room-choice-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;
+}
+.room-choice-card{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:16px;padding:18px 14px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  cursor:pointer;transition:all .15s;text-align:center;
+}
+.room-choice-card:active{transform:scale(.97);}
+.room-choice-card.create{
+  border-color:rgba(99,102,241,.35);
+  background:rgba(99,102,241,.08);
+}
+.room-choice-card.join{
+  border-color:rgba(16,185,129,.35);
+  background:rgba(16,185,129,.08);
+}
+.room-choice-icon{
+  width:44px;height:44px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+.room-choice-card.create .room-choice-icon{background:rgba(99,102,241,.18);color:#6366f1;}
+.room-choice-card.join .room-choice-icon{background:rgba(16,185,129,.18);color:#10b981;}
+.room-choice-title{font-size:14px;font-weight:800;}
+.room-choice-sub{font-size:10px;color:var(--text3);}
+
+/* Code display */
+.room-code-display{
+  background:var(--surface-2);border:2px dashed var(--border);
+  border-radius:16px;padding:18px;text-align:center;margin:14px 0;
+}
+.room-code-value{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:3rem;font-weight:900;letter-spacing:.18em;
+  color:var(--sport-primary);
+}
+.room-code-copy{
+  margin-top:8px;font-size:11px;color:var(--text3);
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  cursor:pointer;
+}
+
+/* Code input */
+.room-code-input{
+  width:100%;background:var(--surface-2);border:2px solid var(--border);
+  border-radius:14px;padding:14px 16px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:2rem;font-weight:900;letter-spacing:.15em;
+  color:var(--text);text-align:center;text-transform:uppercase;
+  outline:none;
+  transition:border-color .15s;
+}
+.room-code-input:focus{border-color:var(--sport-primary);}
+
+/* Room lobby */
+.room-lobby{
+  background:var(--surface-1);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;margin:0 0 12px;
+}
+.room-lobby-header{
+  padding:16px 16px 12px;
+  background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(16,185,129,.06));
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.room-lobby-code-badge{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:999px;padding:4px 12px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:18px;font-weight:900;letter-spacing:.1em;
+  color:var(--sport-primary);cursor:pointer;
+}
+.room-lobby-state{
+  font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+  padding:3px 10px;border-radius:999px;
+}
+.room-lobby-state.waiting{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+.room-lobby-state.live{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);}
+.room-lobby-state.paused{background:rgba(99,102,241,.15);color:#6366f1;border:1px solid rgba(99,102,241,.3);}
+.room-lobby-state.completed{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);}
+.room-lobby-state.locked{background:rgba(100,100,100,.15);color:#888;border:1px solid rgba(100,100,100,.3);}
+
+/* Members list */
+.room-member-list{padding:8px 12px;}
+.room-member-row{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 4px;border-bottom:1px solid var(--border);
+}
+.room-member-row:last-child{border-bottom:none;}
+.room-member-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--surface-2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:var(--sport-primary);
+  flex-shrink:0;
+}
+.room-member-name{flex:1;font-size:13px;font-weight:700;}
+.room-member-you{font-size:9px;color:var(--text3);margin-left:4px;}
+.room-member-online{
+  width:6px;height:6px;border-radius:50%;background:#10b981;
+  box-shadow:0 0 4px #10b981;flex-shrink:0;
+}
+.room-member-offline{ width:6px;height:6px;border-radius:50%;background:var(--text3);flex-shrink:0; }
+.room-role-badge{
+  font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+  padding:2px 7px;border-radius:999px;flex-shrink:0;
+}
+.room-role-badge.host{background:rgba(245,158,11,.18);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+.room-role-badge.scorer{background:rgba(99,102,241,.18);color:#818cf8;border:1px solid rgba(99,102,241,.3);}
+.room-role-badge.viewer{background:rgba(100,100,100,.12);color:var(--text3);border:1px solid var(--border);}
+
+/* Permission denied toast */
+.perm-denied{
+  animation:shake .3s ease;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-6px);}
+  75%{transform:translateX(6px);}
+}
+
+/* Audit log */
+.audit-row{
+  display:flex;align-items:flex-start;gap:8px;padding:9px 12px;font-size:11px;
+}
+.audit-who{font-weight:800;color:var(--sport-primary);white-space:nowrap;}
+.audit-action{color:var(--text2);flex:1;}
+.audit-time{color:var(--text3);white-space:nowrap;font-size:10px;margin-top:1px;}
+
+/* Connection status bar */
+#room-connection-bar{
+  display:none;
+  position:sticky;top:0;z-index:10;
+  padding:6px 12px;font-size:11px;font-weight:700;text-align:center;
+}
+#room-connection-bar.reconnecting{
+  display:block;
+  background:rgba(245,158,11,.2);color:#f59e0b;
+  border-bottom:1px solid rgba(245,158,11,.3);
+}
+#room-connection-bar.offline{
+  display:block;
+  background:rgba(239,68,68,.2);color:#ef4444;
+  border-bottom:1px solid rgba(239,68,68,.3);
+}
+
+/* Who's typing / last update */
+.room-last-update{
+  font-size:10px;color:var(--text3);
+  padding:4px 14px;text-align:center;
+  font-style:italic;min-height:22px;
+}
+
+/* Invite link */
+.room-invite-link{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:12px;padding:10px 12px;
+  font-size:11px;color:var(--text2);word-break:break-all;cursor:pointer;
+}
+
+/* Lock banner */
+#room-lock-banner{
+  display:none;
+  background:rgba(100,100,100,.15);border:1px solid var(--border);
+  border-radius:12px;padding:10px 14px;
+  text-align:center;font-size:12px;color:var(--text3);
+  margin:0 0 10px;
+}
+
+</style>
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/gateway.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/sports.css">
+  <link rel="stylesheet" href="styles/awards.css">
+  <link rel="stylesheet" href="styles/history.css">
+  <link rel="stylesheet" href="styles/profiles.css">
+  <link rel="stylesheet" href="styles/theme.css">
+</head>
+<body>
+<!-- ═══════════════════════════════════════════════
+     ROOM STATUS PILL (shown when in a room)
+═══════════════════════════════════════════════ -->
+<div id="room-status-pill" style="display:none;" onclick="openRoomLobby()">
+  <div class="pill-dot"></div>
+  <span id="room-pill-label">ROOM</span>
+</div>
+
+<!-- ═══ ROOM ENTRY POPUP (shown on sport select) ═══ -->
+<div class="room-entry-overlay" id="room-entry-overlay">
+  <div class="room-entry-sheet" id="room-entry-sheet">
+
+    <!-- Sport header -->
+    <div class="room-entry-header" id="room-entry-header" style="background:var(--surface-1);">
+      <button class="room-entry-close-btn" onclick="closeRoomEntry()" aria-label="Close">
+        <i class="ti ti-x"></i>
+      </button>
+      <div class="room-entry-sport-chip" id="room-entry-chip">
+        <i class="ti ti-cricket" id="room-entry-icon"></i>
+        <span id="room-entry-sport-name">Cricket</span>
+      </div>
+      <div class="room-entry-title">Play Together or Solo?</div>
+      <div class="room-entry-sub">Score live with friends in real time, or play solo on this device.</div>
+    </div>
+
+    <!-- Choices -->
+    <div class="room-entry-choices">
+
+      <!-- Supabase not configured warning -->
+      <div id="room-entry-no-creds-banner" style="display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:10px 14px;font-size:12px;color:#ef4444;margin-bottom:4px;">
+        <b>⚠ Supabase not configured.</b> Tap <b>⚙ Configure Supabase</b> below before creating or joining a room.
+      </div>
+
+      <!-- Solo -->
+      <button class="room-entry-btn solo" onclick="roomEntrySolo()">
+        <div class="room-entry-btn-icon"><i class="ti ti-user"></i></div>
+        <div class="room-entry-btn-text">
+          <div class="room-entry-btn-label">Solo Mode</div>
+          <div class="room-entry-btn-desc">Score on this device only, no sync needed</div>
+        </div>
+        <i class="ti ti-chevron-right room-entry-btn-arrow"></i>
+      </button>
+
+      <!-- Create Room -->
+      <button class="room-entry-btn create" onclick="roomEntryCreate()">
+        <div class="room-entry-btn-icon"><i class="ti ti-plus"></i></div>
+        <div class="room-entry-btn-text">
+          <div class="room-entry-btn-label">Create a Room</div>
+          <div class="room-entry-btn-desc">Host this match — share a code with scorers & viewers</div>
+        </div>
+        <i class="ti ti-chevron-right room-entry-btn-arrow"></i>
+      </button>
+
+      <!-- Join Room -->
+      <button class="room-entry-btn join" onclick="roomEntryShowJoin()">
+        <div class="room-entry-btn-icon"><i class="ti ti-door-enter"></i></div>
+        <div class="room-entry-btn-text">
+          <div class="room-entry-btn-label">Join a Room</div>
+          <div class="room-entry-btn-desc">Enter a code to join a live match in progress</div>
+        </div>
+        <i class="ti ti-chevron-right room-entry-btn-arrow"></i>
+      </button>
+
+      <!-- Join inline input -->
+      <div class="room-join-inline" id="room-join-inline">
+        <input id="room-entry-name" class="input" placeholder="Your display name" />
+        <input id="room-entry-code" class="room-code-input" placeholder="ROOM CODE" maxlength="8"
+          oninput="this.value=this.value.toUpperCase()" style="font-size:1.6rem;" />
+        <button id="room-entry-join-btn" class="btn success full" onclick="roomEntryJoin()" style="padding:13px;font-size:15px;">
+          <i class="ti ti-door-enter"></i> Join Room
+        </button>
+      </div>
+
+      <!-- Create inline input -->
+      <div class="room-join-inline" id="room-create-inline">
+        <input id="room-entry-create-name" class="input" placeholder="Your display name (host)" />
+        <button id="room-entry-create-btn" class="btn primary full" onclick="roomEntryDoCreate()" style="padding:13px;font-size:15px;">
+          <i class="ti ti-plus"></i> Create Room &amp; Continue
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Setup link -->
+    <div class="room-setup-link">
+      <a href="#" onclick="event.preventDefault();openRoomSetupModal()">⚙ Configure Supabase</a>
+      &nbsp;·&nbsp;
+      <a href="#" onclick="event.preventDefault();roomEntrySolo()" style="color:var(--text3);">Skip for now</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     ROOM OVERLAY (create/join sheet)
+═══════════════════════════════════════════════ -->
+<div class="room-overlay" id="room-overlay" onclick="closeRoomOverlay()">
+  <div class="room-sheet" onclick="event.stopPropagation()">
+    <div class="room-sheet-handle"></div>
+    <div class="room-sheet-body" id="room-sheet-body">
+      <!-- Content injected by JS -->
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ HEADER ═══════ -->
+<header>
+  <!-- Arena logo + name → tapping takes you home from any screen -->
+  <button class="header-brand" onclick="goHome()" id="header-brand-btn" aria-label="Go to home">
+    <div class="header-logo"><i class="ti ti-brand-appgallery" style="font-size:20px;color:#fff;"></i></div>
+    <div class="header-app-name">ARENA</div>
+  </button>
+
+  <!-- Back chevron — only visible inside a sport -->
+  <button class="header-back-btn hidden" id="header-back-btn" onclick="goBack()" aria-label="Back">
+    <i class="ti ti-chevron-left"></i>
+  </button>
+
+  <!-- Sport badge -->
+  <span id="header-sport-badge" class="header-sport-badge hidden"></span>
+
+  <div class="header-spacer"></div>
+
+  <!-- Right controls — grouped flush to edge, no gap -->
+  <div class="header-right">
+    <!-- Theme toggle — simple icon button -->
+    <button class="theme-toggle-btn" id="theme-toggle-pill" onclick="toggleTheme()" aria-label="Toggle theme">
+      <i class="ti ti-sun" id="theme-icon-light"></i>
+      <i class="ti ti-moon-stars" id="theme-icon-dark"></i>
+    </button>
+
+    <span id="mode-badge" class="mode-badge mode-scorer hidden" onclick="toggleMode()">
+      <i class="ti ti-pencil"></i> Scorer
+    </span>
+  </div>
+</header>
+
+<div id="viewer-overlay" class="viewer-overlay hidden"><i class="ti ti-eye"></i> Viewer — Read Only</div>
+
+<!-- ═══════════════════════════════════════
+     GATEWAY SCREEN
+═══════════════════════════════════════ -->
+<div id="screen-gateway" class="screen active">
+
+  <!-- Page header -->
+  <div class="gw-header">
+    <div>
+      <div class="gw-greeting" id="gw-greeting-text">Hey, Squad 👋</div>
+      <div class="gw-headline">Who's the <span>GOAT</span> today?</div>
+    </div>
+    <div class="gw-avatar" onclick="showSquadName()"><i class="ti ti-users"></i></div>
+  </div>
+
+  <!-- Section label -->
+  <div class="gw-section-label">
+    Pick a sport <span>Swipe to explore →</span>
+  </div>
+
+  <!-- Peeking carousel -->
+  <div class="gw-carousel-viewport" id="gw-carousel-viewport">
+    <div class="gw-carousel-track" id="gw-carousel-track">
+      
+      <div class="gw-sport-card gw-card-cricket" onclick="selectSport('cricket')">
+        <div class="gw-card-photo" style="background-image:url('assets/images/cricket.jpg');"></div>
+        <div class="gw-card-overlay"></div>
+        <div class="gw-card-tint"></div>
+        <div class="gw-card-live"></div>
+        <div class="gw-card-body">
+          <div class="gw-card-icon"><i class="ti ti-cricket"></i></div>
+          <div class="gw-card-label">Cricket</div>
+          <div class="gw-card-desc">Ball-by-ball scoring, toss & live commentary</div>
+          <button class="gw-card-cta" onclick="event.stopPropagation();selectSport('cricket')">
+            <i class="ti ti-arrow-right"></i> Enter Arena
+          </button>
+        </div>
+      </div>
+      <div class="gw-sport-card gw-card-football" onclick="selectSport('football')">
+        <div class="gw-card-photo" style="background-image:url('assets/images/football.jpg');"></div>
+        <div class="gw-card-overlay"></div>
+        <div class="gw-card-tint"></div>
+        <div class="gw-card-live"></div>
+        <div class="gw-card-body">
+          <div class="gw-card-icon"><i class="ti ti-ball-football"></i></div>
+          <div class="gw-card-label">Football</div>
+          <div class="gw-card-desc">Goals, cards, timer & foul tracking</div>
+          <button class="gw-card-cta" onclick="event.stopPropagation();selectSport('football')">
+            <i class="ti ti-arrow-right"></i> Enter Arena
+          </button>
+        </div>
+      </div>
+      <div class="gw-sport-card gw-card-badminton" onclick="selectSport('badminton')">
+        <div class="gw-card-photo" style="background-image:url('assets/images/badminton.jpg');"></div>
+        <div class="gw-card-overlay"></div>
+        <div class="gw-card-tint"></div>
+        <div class="gw-card-live"></div>
+        <div class="gw-card-body">
+          <div class="gw-card-icon"><i class="ti ti-ping-pong"></i></div>
+          <div class="gw-card-label">Badminton</div>
+          <div class="gw-card-desc">Points to 21, best-of-3 sets</div>
+          <button class="gw-card-cta" onclick="event.stopPropagation();selectSport('badminton')">
+            <i class="ti ti-arrow-right"></i> Enter Arena
+          </button>
+        </div>
+      </div>
+      <div class="gw-sport-card gw-card-pickleball" onclick="selectSport('pickleball')">
+        <div class="gw-card-photo" style="background-image:url('assets/images/pickleball.jpg');"></div>
+        <div class="gw-card-overlay"></div>
+        <div class="gw-card-tint"></div>
+        <div class="gw-card-live"></div>
+        <div class="gw-card-body">
+          <div class="gw-card-icon"><i class="ti ti-tennis"></i></div>
+          <div class="gw-card-label">Pickleball</div>
+          <div class="gw-card-desc">Rally scoring & kitchen faults</div>
+          <button class="gw-card-cta" onclick="event.stopPropagation();selectSport('pickleball')">
+            <i class="ti ti-arrow-right"></i> Enter Arena
+          </button>
+        </div>
+      </div>
+      <div class="gw-sport-card gw-card-chess" onclick="selectSport('chess')">
+        <div class="gw-card-photo" style="background-image:url('assets/images/chess.jpg');"></div>
+        <div class="gw-card-overlay"></div>
+        <div class="gw-card-tint"></div>
+        <div class="gw-card-live"></div>
+        <div class="gw-card-body">
+          <div class="gw-card-icon"><i class="ti ti-chess-knight"></i></div>
+          <div class="gw-card-label">Chess</div>
+          <div class="gw-card-desc">Clock, move log & chess.com board</div>
+          <button class="gw-card-cta" onclick="event.stopPropagation();selectSport('chess')">
+            <i class="ti ti-arrow-right"></i> Enter Arena
+          </button>
+        </div>
+      </div>
+      <!-- Spacer so last card isn't flush to edge -->
+      <div style="flex:0 0 6px;"></div>
+    </div>
+  </div>
+
+  <!-- Dot indicators -->
+  <div class="gw-dots" id="gw-dots">
+    <div class="gw-dot gw-dot-cricket active" onclick="gwGoTo(0)"></div>
+    <div class="gw-dot gw-dot-football" onclick="gwGoTo(1)"></div>
+    <div class="gw-dot gw-dot-badminton" onclick="gwGoTo(2)"></div>
+    <div class="gw-dot gw-dot-pickleball" onclick="gwGoTo(3)"></div>
+    <div class="gw-dot gw-dot-chess" onclick="gwGoTo(4)"></div>
+    
+  </div>
+
+  <!-- Recent / quick access -->
+  <div class="gateway-recent" id="gateway-recent-section" style="display:none;">
+    <div class="gateway-recent-title"><i class="ti ti-history" style="font-size:11px;"></i> Jump back in</div>
+    <div class="gateway-quick-btns" id="gateway-quick-btns"></div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     APP SCREEN (after sport selected)
+═══════════════════════════════════════ -->
+<div id="screen-app" class="screen">
+
+  <!-- ═══ TAB CONTENT ═══ -->
+  <div class="app-wrap">
+
+    <!-- ══════════ MATCH TAB ══════════ -->
+    <div class="section active" id="section-match">
+
+      <!-- CRICKET MATCH SETUP -->
+      <div id="match-cricket" class="hidden">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-trophy"></i> Match Format</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="btn full primary-flat" id="fmt-single-btn" onclick="setCricketFormat('single')"><i class="ti ti-bolt"></i> Single</button>
+            <button class="btn full" id="fmt-series-btn" onclick="setCricketFormat('series')"><i class="ti ti-list-check"></i> Series</button>
+          </div>
+          <div id="cricket-series-config" class="hidden" style="margin-top:12px;">
+            <label>Series Type</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn sm full primary-flat" id="series-3-btn" onclick="setCricketSeriesSize(3)">Best of 3</button>
+              <button class="btn sm full" id="series-5-btn" onclick="setCricketSeriesSize(5)">Best of 5</button>
+            </div>
+          </div>
+          <div id="series-size-note" class="section-sub" style="margin-top:10px;">Single match mode selected.</div>
+          <div id="cricket-series-board" class="series-board hidden">
+            <div>
+              <div class="series-label" id="cricket-series-label">Series 1 of 3</div>
+              <div style="font-size:12px;color:var(--text2);margin-top:2px;" id="cricket-series-info">Team A 0 - 0 Team B</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <div class="series-score" id="cricket-series-score">0 : 0</div>
+              <div class="series-status" id="cricket-series-status">Level</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-home"></i> House Rules</div>
+          <div id="cricket-house-rules-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-users"></i> Players</div>
+          <div style="position:relative;">
+            <div class="input-row">
+              <input type="text" id="cricket-player-input" placeholder="Player name..."
+                autocomplete="off"
+                oninput="onPlayerInputChange(this.value)"
+                onkeydown="onPlayerInputKeydown(event)"
+                onfocus="onPlayerInputChange(this.value)"
+                onblur="setTimeout(hideSuggestions,180)"/>
+              <button class="btn primary sm" onclick="addCricketPlayer()"><i class="ti ti-plus"></i></button>
+            </div>
+            <div id="player-suggestions" class="player-suggestions hidden"></div>
+          </div>
+          <div id="cricket-players-list" style="margin-top:10px;"></div>
+          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+            <button class="btn sm primary-flat" onclick="addSampleCricketPlayers()"><i class="ti ti-wand"></i> Demo players</button>
+            <button class="btn sm danger" onclick="clearCricketPlayers()"><i class="ti ti-trash"></i> Clear</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-shield-half"></i> Generate Teams</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="btn primary full" onclick="generateCricketTeams()"><i class="ti ti-shuffle"></i> Auto</button>
+            <button class="btn purple full" onclick="toast('Manual selection — coming soon!')"><i class="ti ti-hand-click"></i> Manual</button>
+          </div>
+          <div id="cricket-teams-output" class="hidden" style="margin-top:12px;">
+            <div class="teams-grid" id="cricket-teams-grid"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+              <div><label>Team A Name</label><input type="text" id="team-a-name" onchange="S.cricket.teamAName=this.value;save();"/></div>
+              <div><label>Team B Name</label><input type="text" id="team-b-name" onchange="S.cricket.teamBName=this.value;save();"/></div>
+            </div>
+            <button class="btn success full mt-12" onclick="goToToss()"><i class="ti ti-coin"></i> Proceed to Toss →</button>
+          </div>
+        </div>
+        <!-- TOSS INLINE -->
+        <div id="toss-card" class="hidden">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-coin"></i> Toss Setup</div>
+            <div id="toss-teams-info" style="font-size:12px;color:var(--text2);margin-bottom:10px;"></div>
+            <label>Overs per innings</label>
+            <input type="number" id="overs-input" value="10" min="1" max="50"/>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+              <div><label>Toss won by</label>
+                <select id="toss-winner-sel">
+                  <option value="">Select...</option>
+                </select>
+              </div>
+              <div><label>Choice</label>
+                <select id="toss-choice-sel">
+                  <option value="bat">Bat first</option>
+                  <option value="field">Field first</option>
+                </select>
+              </div>
+            </div>
+            <div id="toss-result" class="toss-result-banner hidden"></div>
+          </div>
+          <div class="card text-center" style="padding:20px;">
+            <div class="coin-anim" id="coin-el"><i class="ti ti-coin" style="font-size:52px;color:var(--amber);"></i></div>
+            <div style="font-size:12px;color:var(--text2);margin-top:6px;">Or flip for a random result</div>
+            <button class="btn full mt-12" onclick="flipCoin()"><i class="ti ti-coin"></i> Flip coin</button>
+          </div>
+          <button class="btn success full" style="margin-bottom:12px;" onclick="startCricketMatch()"><i class="ti ti-player-play"></i> Start Match</button>
+        </div>
+      </div>
+
+      <!-- FOOTBALL MATCH SETUP -->
+      <div id="match-football" class="hidden">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-users"></i> Teams</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><label>Home Team</label><input type="text" id="fb-home-name" placeholder="Home FC" value="Home FC" onchange="S.football.homeTeam=this.value;save();renderFootballLive();"/></div>
+            <div><label>Away Team</label><input type="text" id="fb-away-name" placeholder="Away FC" value="Away FC" onchange="S.football.awayTeam=this.value;save();renderFootballLive();"/></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+            <div>
+              <label>Match Duration</label>
+              <select id="fb-duration" onchange="S.football.duration=+this.value;save();">
+                <option value="90">90 minutes (full)</option>
+                <option value="45">45 minutes (half)</option>
+                <option value="30">30 minutes (short)</option>
+                <option value="20">20 minutes (mini)</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn success full mt-12" onclick="startFootballMatch()"><i class="ti ti-player-play"></i> Start Match</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-users-group"></i> Squad Numbers</div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">Register players for card/foul logging (optional)</div>
+          <div class="input-row">
+            <input type="number" id="fb-player-num-input" placeholder="#" min="1" max="99" style="width:70px;flex:none;"/>
+            <input type="text" id="fb-player-name-input" placeholder="Player name..."/>
+            <button class="btn primary sm" onclick="addFootballPlayer()"><i class="ti ti-plus"></i></button>
+          </div>
+          <div id="fb-squad-list" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <!-- BADMINTON MATCH SETUP -->
+      <div id="match-badminton" class="hidden">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-users"></i> Players / Teams</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><label>Player / Team A</label><input type="text" id="bd-player-a" placeholder="Player A" value="Player A" onchange="S.badminton.playerA=this.value;save();renderBadmintonLive();"/></div>
+            <div><label>Player / Team B</label><input type="text" id="bd-player-b" placeholder="Player B" value="Player B" onchange="S.badminton.playerB=this.value;save();renderBadmintonLive();"/></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+            <div><label>Format</label>
+              <select id="bd-format" onchange="S.badminton.format=+this.value;save();">
+                <option value="3">Best of 3 sets</option>
+                <option value="5">Best of 5 sets</option>
+              </select>
+            </div>
+            <div><label>Points to Win</label>
+              <select id="bd-points" onchange="S.badminton.pointsToWin=+this.value;save();">
+                <option value="21">21 points</option>
+                <option value="11">11 points</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn success full mt-12" onclick="startBadmintonMatch()"><i class="ti ti-player-play"></i> Start Match</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-coin"></i> Service Toss</div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">Who serves first?</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="btn primary-flat full" onclick="setBadmintonServer('a')"><i class="ti ti-bolt"></i> Player A serves</button>
+            <button class="btn success full" onclick="setBadmintonServer('b')"><i class="ti ti-bolt"></i> Player B serves</button>
+          </div>
+          <div id="bd-server-info" style="font-size:12px;color:var(--text2);margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <!-- PICKLEBALL MATCH SETUP -->
+      <div id="match-pickleball" class="hidden">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-tennis"></i> Players / Teams</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><label>Player / Team A</label><input type="text" id="pb-player-a" placeholder="Player A" value="Player A" onchange="S.pickleball.playerA=this.value;save();renderPickleballLive();"/></div>
+            <div><label>Player / Team B</label><input type="text" id="pb-player-b" placeholder="Player B" value="Player B" onchange="S.pickleball.playerB=this.value;save();renderPickleballLive();"/></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+            <div><label>Format</label>
+              <select id="pb-format" onchange="S.pickleball.format=this.value;save();">
+                <option value="singles">Singles (1v1)</option>
+                <option value="doubles">Doubles (2v2)</option>
+              </select>
+            </div>
+            <div><label>Game to</label>
+              <select id="pb-points" onchange="S.pickleball.pointsToWin=+this.value;save();">
+                <option value="11">11 pts (win by 2)</option>
+                <option value="15">15 pts (win by 2)</option>
+                <option value="21">21 pts (win by 2)</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:10px;">
+            <label>Best of</label>
+            <select id="pb-games" onchange="S.pickleball.gamesToWin=+this.value;save();">
+              <option value="1">1 game</option>
+              <option value="3">Best of 3</option>
+              <option value="5">Best of 5</option>
+            </select>
+          </div>
+          <button class="btn success full mt-12" onclick="startPickleballMatch()"><i class="ti ti-player-play"></i> Start Match</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-info-circle"></i> Pickleball Rules</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">🏓</span><div><b style="color:var(--text);">Scoring (Rally Scoring)</b><br>Every rally scores a point, regardless of who served. First to reach target (11, 15, or 21) wins — must win by 2. At 10-10 (for 11pt), play continues until a 2-point lead is gained.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">🎯</span><div><b style="color:var(--text);">The Serve</b><br>Must be underhand (paddle below wrist). Ball struck below waist. Serve diagonally cross-court, landing in opposite service box. Server must keep both feet behind the baseline. Only one serve attempt per rally.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">🏠</span><div><b style="color:var(--text);">The Kitchen (Non-Volley Zone — NVZ)</b><br>The 7-foot zone on each side of the net. Players CANNOT volley (hit the ball in the air) while standing in the kitchen. You may step in to play a bounced ball, but must exit before volleying. This is the most common fault.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">⬇️</span><div><b style="color:var(--text);">Double-Bounce Rule</b><br>After the serve, the receiving team MUST let the ball bounce once before returning. The serving team must also let the return bounce before volleying. After these two bounces, both teams may volley freely.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">⚠️</span><div><b style="color:var(--text);">Common Faults</b><br>• Ball lands out of bounds<br>• Ball hits the net<br>• Kitchen fault (volleying from NVZ)<br>• Serve fault (wrong court or out)<br>• Ball bounces twice before return</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--pickleball-primary,#34d399);font-size:16px;">🎮</span><div><b style="color:var(--text);">Doubles Rules</b><br>Both players on a team serve before the serve passes to the other team (side-out). Exception: at the very start, only one player serves. Server must call score (server score, receiver score, server number) before each serve.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHESS MATCH SETUP -->
+      <div id="match-chess" class="hidden">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-chess-king"></i> Players</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><label>White ♔</label><input type="text" id="ch-player-white" placeholder="White" value="White" onchange="S.chess.playerWhite=this.value;save();renderChessLive();"/></div>
+            <div><label>Black ♚</label><input type="text" id="ch-player-black" placeholder="Black" value="Black" onchange="S.chess.playerBlack=this.value;save();renderChessLive();"/></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+            <div><label>Time Control</label>
+              <select id="ch-time" onchange="S.chess.timeControl=this.value;applyChessTimeControl();save();">
+                <option value="none">No clock</option>
+                <option value="bullet_1">Bullet 1+0</option>
+                <option value="bullet_2">Bullet 2+1</option>
+                <option value="blitz_3">Blitz 3+0</option>
+                <option value="blitz_5">Blitz 5+0</option>
+                <option value="blitz_5_3">Blitz 5+3</option>
+                <option value="rapid_10">Rapid 10+0</option>
+                <option value="rapid_15_10">Rapid 15+10</option>
+                <option value="rapid_30">Rapid 30+0</option>
+                <option value="classical_60">Classical 60+0</option>
+              </select>
+            </div>
+            <div><label>Increment (sec)</label>
+              <input type="number" id="ch-increment" value="0" min="0" max="60" onchange="S.chess.increment=+this.value;save();"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+            <div><label>Rated?</label>
+              <select id="ch-rated" onchange="S.chess.rated=this.value==='true';save();">
+                <option value="false">Casual</option>
+                <option value="true">Rated</option>
+              </select>
+            </div>
+            <div><label>First Move</label>
+              <select id="ch-first" onchange="S.chess.currentTurn=this.value;save();">
+                <option value="white">White moves first</option>
+                <option value="black">Black moves first</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn success full mt-12" onclick="startChessMatch()"><i class="ti ti-player-play"></i> Start Game</button>
+        </div>
+        <!-- Chess Rules & Guide -->
+        <div class="card">
+          <div class="card-title"><i class="ti ti-info-circle"></i> Chess Guide</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">♟</span><div><b style="color:var(--text);">Pieces & Values</b><br>Pawn=1 · Knight=3 · Bishop=3 · Rook=5 · Queen=9. The King is invaluable — losing it ends the game.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">♛</span><div><b style="color:var(--text);">Objective</b><br>Checkmate your opponent's King — place it under attack with no escape. Draws occur by stalemate, 50-move rule, threefold repetition, or insufficient material.</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">⚡</span><div><b style="color:var(--text);">Time Controls</b><br>• <b>Bullet</b> (1-2 min): Ultra-fast instinctive play<br>• <b>Blitz</b> (3-5 min): Fast, popular online format<br>• <b>Rapid</b> (10-30 min): Balanced, most common<br>• <b>Classical</b> (60+ min): Deep strategic play</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">📝</span><div><b style="color:var(--text);">Algebraic Notation</b><br><b>e4</b>=pawn to e4 · <b>Nf3</b>=knight to f3 · <b>O-O</b>=kingside castle · <b>O-O-O</b>=queenside castle · <b>Qxd5</b>=queen captures d5 · <b>e8=Q</b>=pawn promotes to queen · <b>+</b>=check · <b>#</b>=checkmate</div></div>
+            <div style="display:flex;gap:8px;"><span style="color:var(--chess-primary,#c084fc);font-size:16px;">🖱️</span><div><b style="color:var(--text);">Interactive Board</b><br>Tap any piece to select it — legal moves appear as green dots. Tap a dot to move. Use the Material Balance section to track captures and advantage.</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- END MATCH TAB -->
+
+    <!-- ══════════ LIVE TAB ══════════ -->
+    <div class="section" id="section-live">
+
+      <!-- CRICKET LIVE -->
+      <div id="live-cricket" class="hidden">
+        <div id="cricket-no-match" class="alert warn">Set up teams and complete the toss first.</div>
+        <div id="cricket-live-ui" class="hidden">
+          <div id="innings-switch-banner"></div>
+          <div class="innings-toggle">
+            <button class="inn-btn active" id="inn1-btn" onclick="switchInnings(1)">1st Innings</button>
+            <button class="inn-btn" id="inn2-btn" onclick="switchInnings(2)">2nd Innings</button>
+          </div>
+          <div class="desktop-split">
+            <div>
+              <!-- SCORE CARD -->
+              <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                  <div>
+                    <div style="font-size:10px;color:var(--text3);font-weight:800;text-transform:uppercase;letter-spacing:.05em;" id="batting-label">Batting</div>
+                    <div style="font-size:15px;font-weight:900;margin-top:2px;" id="batting-name">—</div>
+                  </div>
+                  <div style="text-align:right;">
+                    <div class="score-big" id="score-disp">0/0</div>
+                    <div class="score-sub" id="overs-disp">0.0 overs</div>
+                  </div>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="overs-progress" style="width:0%"></div></div>
+                <div class="stats-row">
+                  <div class="stat-box"><div class="stat-val" id="rr-disp">0.00</div><div class="stat-lbl">Run Rate</div></div>
+                  <div class="stat-box"><div class="stat-val" id="balls-left-disp">—</div><div class="stat-lbl">Balls Left</div></div>
+                  <div class="stat-box"><div class="stat-val" id="target-disp">—</div><div class="stat-lbl">Target</div></div>
+                </div>
+                <div id="chase-alert" class="alert info hidden" style="font-size:11px;margin:10px 0 0;"></div>
+                <div id="cricket-active-house-rules" style="margin-top:8px;"></div>
+              </div>
+
+              <div id="cricket-live-series-board" class="series-board hidden">
+                <div>
+                  <div class="series-label" id="cricket-live-series-label">Series 1 of 3</div>
+                  <div class="series-sub" id="cricket-live-series-info">Team A 0 - 0 Team B</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                  <div class="series-score" id="cricket-live-series-score">0 : 0</div>
+                  <div class="series-status" id="cricket-live-series-status">Level</div>
+                </div>
+              </div>
+              <!-- PLAYER SELECT -->
+              <div class="card">
+                <div class="player-row">
+                  <div class="icon"><i class="ti ti-bolt"></i></div>
+                  <select id="striker-sel"></select>
+                  <div class="fig" id="striker-fig">0(0)</div>
+                </div>
+                <div class="player-row">
+                  <div class="icon"><i class="ti ti-target-arrow"></i></div>
+                  <select id="bowler-sel"></select>
+                  <div class="fig" id="bowler-fig">0/0</div>
+                </div>
+              </div>
+              <!-- Room connection & last update -->
+              <div id="room-connection-bar"></div>
+              <div class="room-last-update"></div>
+              <div id="room-lock-banner"><i class="ti ti-lock"></i> Scoring is locked by the host</div>
+              <!-- UNIFIED OVERS CARD -->
+              <div class="card" id="overs-unified-card">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div style="font-size:10px;color:var(--text3);font-weight:800;text-transform:uppercase;letter-spacing:.05em;"><i class="ti ti-list-numbers" style="margin-right:4px;"></i>Overs</div>
+                  <div id="over-live-badge" style="display:none;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--sport-primary);background:var(--sport-primary-l);border:1px solid var(--sport-primary-m);border-radius:999px;padding:2px 8px;">LIVE</div>
+                </div>
+                <div id="over-history-list"></div>
+              </div>
+              <!-- SCORE BUTTONS -->
+              <div class="card">
+                <div style="font-size:10px;color:var(--text3);font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Tap to Score</div>
+                <div class="score-btns">
+                  <button class="score-btn" onclick="cricketScore(0)"><div class="score-btn-val">0</div><div class="score-btn-lbl">dot</div></button>
+                  <button class="score-btn" onclick="cricketScore(1)"><div class="score-btn-val">1</div><div class="score-btn-lbl">run</div></button>
+                  <button class="score-btn" onclick="cricketScore(2)"><div class="score-btn-val">2</div><div class="score-btn-lbl">runs</div></button>
+                  <button class="score-btn" onclick="cricketScore(3)"><div class="score-btn-val">3</div><div class="score-btn-lbl">runs</div></button>
+                  <button class="score-btn r4" onclick="cricketScore(4)"><div class="score-btn-val">4</div><div class="score-btn-lbl">FOUR</div></button>
+                  <button class="score-btn r6" onclick="cricketScore(6)"><div class="score-btn-val">6</div><div class="score-btn-lbl">SIX</div></button>
+                  <button class="score-btn wkt" onclick="cricketWicket()"><div class="score-btn-val">W</div><div class="score-btn-lbl">OUT</div></button>
+                  <button class="score-btn ext" onclick="openExtrasModal()"><div class="score-btn-val"><i class="ti ti-dots-circle-horizontal"></i></div><div class="score-btn-lbl">Extras</div></button>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:10px;">
+                  <button class="btn sm danger full" onclick="undoCricketScore()"><i class="ti ti-arrow-back"></i> Undo</button>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-title"><i class="ti ti-message-chatbot"></i> Commentary</div>
+                <div id="cricket-commentary-feed" class="commentary-feed">
+                  <div class="commentary-empty">Commentary will appear here as the match progresses.</div>
+                </div>
+              </div>
+            </div>
+                          <div class="card analytics-card">
+                <div>
+                  <div class="worm-head">
+                    <div class="worm-title"><i class="ti ti-chart-line"></i> Run Rate Worm</div>
+                    <div class="worm-meta" id="worm-current-rr">0.00 RR</div>
+                  </div>
+                  <div class="worm-legend" id="worm-legend"></div>
+                  <canvas id="run-rate-worm" class="worm-canvas" height="160" aria-label="Run rate worm chart"></canvas>
+                </div>
+                <div class="win-pred-wrap">
+                  <div class="win-pred-label"><i class="ti ti-trophy" style="margin-right:4px;"></i>Win Prediction</div>
+                  <div class="win-pred-teams">
+                    <div class="win-pred-team left">
+                      <div class="win-pred-tname" id="win-prob-team-a">Team A</div>
+                      <div class="win-pred-pct home" id="win-prob-a">50%</div>
+                    </div>
+                    <div class="win-pred-team right">
+                      <div class="win-pred-tname" id="win-prob-team-b">Team B</div>
+                      <div class="win-pred-pct away" id="win-prob-b">50%</div>
+                    </div>
+                  </div>
+                  <div class="win-pred-bar-track">
+                    <div class="win-pred-bar-home" id="win-prob-fill-a" style="width:50%"></div>
+                    <div class="win-pred-bar-away" id="win-prob-fill-b"></div>
+                  </div>
+                </div>
+              </div>
+            <!-- SCORECARD (desktop right column) -->
+            <div id="scorecard-desktop-wrap">
+              <div class="card">
+                <div class="card-title"><i class="ti ti-table"></i> Scorecard</div>
+                <div id="live-scorecard-content"><div style="font-size:12px;color:var(--text3);">Match not started.</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RESULT BANNER -->
+          <div id="cricket-result" class="result-banner hidden">
+            <div style="font-size:48px;"><i class="ti ti-trophy" style="color:#ffd700;font-size:48px;filter:drop-shadow(0 0 20px rgba(255,215,0,.5));"></i></div>
+            <div class="winner-name" id="result-winner"></div>
+            <div class="margin" id="result-margin"></div>
+            <div style="display:grid;gap:8px;margin-top:16px;">
+              <button class="btn warn full" onclick="showMatchSummary()"><i class="ti ti-chart-bar"></i> Match Summary</button>
+              <button class="btn primary full" onclick="shareCurrentResult()"><i class="ti ti-share"></i> Share Result</button>
+              <button class="btn success full" onclick="newCricketMatch()"><i class="ti ti-plus"></i> New Match</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTBALL LIVE -->
+      <div id="live-football" class="hidden">
+        <div id="football-no-match" class="alert warn">Set up teams in the Match tab first.</div>
+        <div id="football-live-ui" class="hidden">
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="fb-scoreboard">
+              <div class="fb-team">
+                <div class="fb-team-name" id="fb-home-display">Home FC</div>
+                <div class="fb-score-display" id="fb-home-score">0</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="fb-score-sep">:</div>
+                <div id="fb-match-status-badge" class="live-badge" style="margin-top:6px;">Live</div>
+              </div>
+              <div class="fb-team">
+                <div class="fb-team-name" id="fb-away-display">Away FC</div>
+                <div class="fb-score-display" id="fb-away-score">0</div>
+              </div>
+            </div>
+            <div class="fb-timer">
+              <div class="fb-timer-display" id="fb-timer-display">00:00</div>
+              <div class="fb-timer-label" id="fb-half-label">1st Half</div>
+              <div class="fb-timer-btns">
+                <button class="btn sm primary-flat" onclick="toggleFootballTimer()" id="fb-timer-btn"><i class="ti ti-player-play"></i> Start</button>
+                <button class="btn sm" onclick="resetFootballTimer()"><i class="ti ti-refresh"></i> Reset</button>
+                <button class="btn sm warn" onclick="startSecondHalf()"><i class="ti ti-arrow-right"></i> 2nd Half</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="ti ti-ball-football"></i> Goals</div>
+            <div class="fb-goal-section">
+              <button class="fb-goal-btn" onclick="footballGoal('home')">
+                <div class="fb-goal-btn-team" id="fb-goal-home-label">Home FC</div>
+                <div class="fb-goal-btn-action">+1</div>
+                <div class="fb-goal-btn-lbl">Goal</div>
+              </button>
+              <button class="fb-goal-btn" onclick="footballGoal('away')">
+                <div class="fb-goal-btn-team" id="fb-goal-away-label">Away FC</div>
+                <div class="fb-goal-btn-action">+1</div>
+                <div class="fb-goal-btn-lbl">Goal</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="ti ti-card-clubs"></i> Cards & Fouls</div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:10px;">Select event type, then choose the player number.</div>
+            <div class="fb-cards-section">
+              <button class="fb-card-btn yellow" onclick="logCardOrFoul('yellow-home')">
+                <div class="fb-card-icon"><i class="ti ti-cards" style="color:#facc15;font-size:20px;"></i></div>
+                <div class="fb-card-btn-lbl">Yellow<br/>Home</div>
+              </button>
+              <button class="fb-card-btn red" onclick="logCardOrFoul('red-home')">
+                <div class="fb-card-icon"><i class="ti ti-cards" style="color:#f87171;font-size:20px;"></i></div>
+                <div class="fb-card-btn-lbl">Red<br/>Home</div>
+              </button>
+              <button class="fb-card-btn yellow" onclick="logCardOrFoul('yellow-away')">
+                <div class="fb-card-icon"><i class="ti ti-cards" style="color:#facc15;font-size:20px;"></i></div>
+                <div class="fb-card-btn-lbl">Yellow<br/>Away</div>
+              </button>
+              <button class="fb-card-btn red" onclick="logCardOrFoul('red-away')">
+                <div class="fb-card-icon"><i class="ti ti-cards" style="color:#f87171;font-size:20px;"></i></div>
+                <div class="fb-card-btn-lbl">Red<br/>Away</div>
+              </button>
+            </div>
+            <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn full sm warn" onclick="logCardOrFoul('foul-home')"><i class="ti ti-alert-triangle"></i> Foul — Home</button>
+              <button class="btn full sm warn" onclick="logCardOrFoul('foul-away')"><i class="ti ti-alert-triangle"></i> Foul — Away</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="ti ti-timeline"></i> Match Events</div>
+            <div id="fb-event-log" class="fb-event-log">
+              <div style="font-size:12px;color:var(--text3);text-align:center;padding:12px 0;">No events yet.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="ti ti-message-chatbot"></i> Commentary</div>
+            <div id="football-commentary-feed" class="commentary-feed">
+              <div class="commentary-empty">Commentary will appear here as the match progresses.</div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+            <button class="btn danger full" onclick="undoFootballEvent()"><i class="ti ti-arrow-back"></i> Undo Last</button>
+            <button class="btn success full" onclick="endFootballMatch()"><i class="ti ti-flag"></i> Full Time</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BADMINTON LIVE -->
+      <div id="live-badminton" class="hidden">
+        <div id="badminton-no-match" class="alert warn">Set up players in the Match tab first.</div>
+        <div id="badminton-live-ui" class="hidden">
+          <!-- Sets bar -->
+          <div class="bd-sets-bar">
+            <span>Sets:</span>
+            <span class="bd-set-chip" id="bd-set-chip-1">S1</span>
+            <span class="bd-set-chip" id="bd-set-chip-2">S2</span>
+            <span class="bd-set-chip" id="bd-set-chip-3">S3</span>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="bd-scoreboard" style="padding:16px;">
+              <!-- Player A -->
+              <div class="bd-player" id="bd-player-a-card">
+                <div class="bd-player-name" id="bd-a-name-disp">Player A</div>
+                <div class="bd-score" id="bd-score-a">0</div>
+                <button class="bd-score-btn add" onclick="badmintonPoint('a')">+ Point</button>
+              </div>
+              <!-- Separator -->
+              <div class="bd-separator"><div class="bd-sep-text">:</div></div>
+              <!-- Player B -->
+              <div class="bd-player" id="bd-player-b-card">
+                <div class="bd-player-name" id="bd-b-name-disp">Player B</div>
+                <div class="bd-score" id="bd-score-b">0</div>
+                <button class="bd-score-btn add" onclick="badmintonPoint('b')">+ Point</button>
+              </div>
+            </div>
+            <div class="bd-set-result" id="bd-sets-won-display" style="padding:0 16px 14px;">Sets won: A 0 – B 0</div>
+          </div>
+
+          <!-- Previous set scores -->
+          <div id="bd-set-results-row" class="bd-set-results-row"></div>
+
+          <div class="card" style="margin-top:10px;">
+            <div class="card-title"><i class="ti ti-server"></i> Service</div>
+            <div id="bd-server-display" style="font-size:13px;color:var(--text2);margin-bottom:10px;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn primary-flat full sm" onclick="setServer('a')" id="bd-serve-a-btn">A Serves</button>
+              <button class="btn success full sm" onclick="setServer('b')" id="bd-serve-b-btn">B Serves</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="ti ti-message-chatbot"></i> Commentary</div>
+            <div id="badminton-commentary-feed" class="commentary-feed">
+              <div class="commentary-empty">Commentary will appear here as the match progresses.</div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <button class="btn danger sm" onclick="undoBadmintonPoint()"><i class="ti ti-arrow-back"></i> Undo</button>
+            <button class="btn warn sm" onclick="newBadmintonSet()"><i class="ti ti-arrow-right"></i> End Set</button>
+            <button class="btn success sm full" onclick="endBadmintonMatch()"><i class="ti ti-flag"></i> End Match</button>
+          </div>
+
+          <!-- Match winner display -->
+          <div id="bd-match-result" class="result-banner hidden">
+            <div style="font-size:48px;"><i class="ti ti-trophy" style="color:#ffd700;font-size:48px;filter:drop-shadow(0 0 20px rgba(255,215,0,.5));"></i></div>
+            <div class="winner-name" id="bd-result-winner"></div>
+            <div class="margin" id="bd-result-margin"></div>
+            <div style="display:grid;gap:8px;margin-top:16px;">
+              <button class="btn primary full" onclick="shareCurrentResult()"><i class="ti ti-share"></i> Share Result</button>
+              <button class="btn success full" onclick="newBadmintonMatch()"><i class="ti ti-plus"></i> New Match</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PICKLEBALL LIVE -->
+      <div id="live-pickleball" class="hidden">
+        <div id="pickleball-no-match" class="alert warn">Set up players in the Match tab first.</div>
+        <div id="pickleball-live-ui" class="hidden">
+          <!-- Game indicator -->
+          <div id="pb-games-bar" style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;"></div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="bd-scoreboard" style="padding:16px;">
+              <div class="bd-player" id="pb-player-a-card">
+                <div class="bd-player-name" id="pb-a-name-disp">Player A</div>
+                <div class="bd-score" id="pb-score-a">0</div>
+                <button class="bd-score-btn add" onclick="pickleballPoint('a')">+ Point</button>
+              </div>
+              <div class="bd-separator"><div class="bd-sep-text">:</div></div>
+              <div class="bd-player" id="pb-player-b-card">
+                <div class="bd-player-name" id="pb-b-name-disp">Player B</div>
+                <div class="bd-score" id="pb-score-b">0</div>
+                <button class="bd-score-btn add" onclick="pickleballPoint('b')">+ Point</button>
+              </div>
+            </div>
+            <div id="pb-server-row" style="text-align:center;font-size:12px;color:var(--text3);padding:0 16px 12px;"></div>
+          </div>
+
+          <div id="pb-game-scores-row" class="bd-set-results-row" style="margin-top:8px;"></div>
+
+          <div class="card" style="margin-top:10px;">
+            <div class="card-title"><i class="ti ti-bolt"></i> Server</div>
+            <div id="pb-server-display" style="font-size:13px;color:var(--text2);margin-bottom:10px;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn primary-flat full sm" onclick="setPbServer('a')" id="pb-serve-a-btn">A Serves</button>
+              <button class="btn success full sm" onclick="setPbServer('b')" id="pb-serve-b-btn">B Serves</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="ti ti-flag-3"></i> Faults &amp; Events</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn sm warn full" onclick="pbEvent('kitchen_fault_a')"><i class="ti ti-border-none"></i> Kitchen Fault A</button>
+              <button class="btn sm warn full" onclick="pbEvent('kitchen_fault_b')"><i class="ti ti-border-none"></i> Kitchen Fault B</button>
+              <button class="btn sm full" onclick="pbEvent('serve_fault_a')"><i class="ti ti-alert-triangle"></i> Serve Fault A</button>
+              <button class="btn sm full" onclick="pbEvent('serve_fault_b')"><i class="ti ti-alert-triangle"></i> Serve Fault B</button>
+            </div>
+            <div id="pb-event-log" style="margin-top:10px;max-height:120px;overflow-y:auto;font-size:11px;color:var(--text3);"></div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <button class="btn danger sm" onclick="undoPickleballPoint()"><i class="ti ti-arrow-back"></i> Undo</button>
+            <button class="btn warn sm" onclick="newPickleballGame()"><i class="ti ti-arrow-right"></i> Next Game</button>
+            <button class="btn success sm full" onclick="endPickleballMatch()"><i class="ti ti-flag"></i> End Match</button>
+          </div>
+          <div id="pb-match-result" class="result-banner hidden">
+            <div style="font-size:48px;"><i class="ti ti-trophy" style="color:#ffd700;font-size:48px;filter:drop-shadow(0 0 20px rgba(255,215,0,.5));"></i></div>
+            <div class="winner-name" id="pb-result-winner"></div>
+            <div class="margin" id="pb-result-margin"></div>
+            <div style="display:grid;gap:8px;margin-top:16px;">
+              <button class="btn primary full" onclick="shareCurrentResult()"><i class="ti ti-share"></i> Share Result</button>
+              <button class="btn success full" onclick="newPickleballMatch()"><i class="ti ti-plus"></i> New Match</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHESS LIVE -->
+      <div id="live-chess" class="hidden">
+        <div id="chess-no-match" class="alert warn">Set up players in the Match tab first.</div>
+        <div id="chess-live-ui" class="hidden">
+
+          <!-- Chess.com style board -->
+          <div class="card" style="padding:10px;">
+            <!-- Black info bar -->
+            <div id="ch-black-bar" class="ch-player-bar">
+              <div class="ch-player-avatar ch-black"><i class="ti ti-chess-king"></i></div>
+              <div style="flex:1;">
+                <div class="ch-player-name" id="ch-black-name">Black</div>
+                <div class="ch-material" id="ch-black-captures"></div>
+              </div>
+              <div class="ch-clock" id="ch-clock-black">—</div>
+            </div>
+            <!-- Board -->
+            <div class="ch-board-wrap" id="ch-board-wrap-el">
+              <canvas id="ch-board" width="400" height="400"></canvas>
+              <div id="ch-board-overlay"></div>
+            </div>
+            <!-- White info bar -->
+            <div id="ch-white-bar" class="ch-player-bar">
+              <div class="ch-player-avatar ch-white"><i class="ti ti-chess-king"></i></div>
+              <div style="flex:1;">
+                <div class="ch-player-name" id="ch-white-name">White</div>
+                <div class="ch-material" id="ch-white-captures"></div>
+              </div>
+              <div class="ch-clock" id="ch-clock-white">—</div>
+            </div>
+          </div>
+
+          <!-- Turn & clock controls -->
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <div>
+                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:800;">Current Turn</div>
+                <div id="ch-turn-display" style="font-size:18px;font-weight:900;margin-top:2px;">White to move</div>
+              </div>
+              <div id="ch-move-count" style="font-size:13px;color:var(--text3);">Move 1</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn primary-flat full" id="ch-press-clock-btn" onclick="chPressClock()"><i class="ti ti-clock-play"></i> Press Clock</button>
+              <button class="btn full" onclick="chPause()" id="ch-pause-btn"><i class="ti ti-player-pause"></i> Pause</button>
+            </div>
+          </div>
+
+          <!-- Move logger -->
+          <div class="card">
+            <div class="card-title"><i class="ti ti-list-numbers"></i> Move Log</div>
+            <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+              <input type="text" id="ch-move-input" placeholder="e.g. e4, Nf3, O-O" style="flex:1;min-width:0;" onkeydown="if(event.key==='Enter')chAddMove()"/>
+              <button class="btn primary-flat sm" onclick="chAddMove()"><i class="ti ti-plus"></i></button>
+            </div>
+            <div id="ch-move-log" class="ch-move-log"></div>
+          </div>
+
+          <!-- Material tracker -->
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chess-bishop"></i> Material Balance</div>
+            <div id="ch-material-display" style="font-size:13px;color:var(--text2);">Even</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;">
+              <div>
+                <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">White captures</div>
+                <div id="ch-white-cap-list" class="ch-cap-list"></div>
+              </div>
+              <div>
+                <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Black captures</div>
+                <div id="ch-black-cap-list" class="ch-cap-list"></div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;">
+              <div style="font-size:10px;color:var(--text3);grid-column:1/-1;font-weight:700;">White captures piece:</div>
+              <button class="btn sm" onclick="chCapture('white','pawn')">♟ Pawn</button>
+              <button class="btn sm" onclick="chCapture('white','knight')">♞ Knight</button>
+              <button class="btn sm" onclick="chCapture('white','bishop')">♝ Bishop</button>
+              <button class="btn sm" onclick="chCapture('white','rook')">♜ Rook</button>
+              <button class="btn sm" onclick="chCapture('white','queen')">♛ Queen</button>
+              <button class="btn sm danger" onclick="chUndoCapture('white')">↩ Undo</button>
+              <div style="font-size:10px;color:var(--text3);grid-column:1/-1;font-weight:700;">Black captures piece:</div>
+              <button class="btn sm" onclick="chCapture('black','pawn')">♙ Pawn</button>
+              <button class="btn sm" onclick="chCapture('black','knight')">♘ Knight</button>
+              <button class="btn sm" onclick="chCapture('black','bishop')">♗ Bishop</button>
+              <button class="btn sm" onclick="chCapture('black','rook')">♖ Rook</button>
+              <button class="btn sm" onclick="chCapture('black','queen')">♕ Queen</button>
+              <button class="btn sm danger" onclick="chUndoCapture('black')">↩ Undo</button>
+            </div>
+          </div>
+
+          <!-- Result -->
+          <div class="card">
+            <div class="card-title"><i class="ti ti-flag"></i> End Game</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+              <button class="btn success full sm" onclick="chResult('white','checkmate')">♔ White wins — Checkmate</button>
+              <button class="btn success full sm" onclick="chResult('black','checkmate')">♚ Black wins — Checkmate</button>
+              <button class="btn primary-flat full sm" onclick="chResult('white','resign')">White wins — Resign</button>
+              <button class="btn primary-flat full sm" onclick="chResult('black','resign')">Black wins — Resign</button>
+              <button class="btn full sm" onclick="chResult(null,'draw_agreement')">½–½ Draw (agreement)</button>
+              <button class="btn full sm" onclick="chResult(null,'stalemate')">½–½ Stalemate</button>
+              <button class="btn full sm" onclick="chResult(null,'draw_50')">½–½ 50-move rule</button>
+              <button class="btn full sm" onclick="chResult(null,'draw_repetition')">½–½ Repetition</button>
+              <button class="btn full sm" onclick="chResult(null,'draw_insufficient')">½–½ Insufficient material</button>
+              <button class="btn danger full sm" onclick="chResult(null,'timeout')">⏱ Timeout</button>
+            </div>
+          </div>
+
+          <div id="ch-match-result" class="result-banner hidden">
+            <div style="font-size:48px;">♔</div>
+            <div class="winner-name" id="ch-result-winner"></div>
+            <div class="margin" id="ch-result-reason"></div>
+            <div style="display:grid;gap:8px;margin-top:16px;">
+              <button class="btn primary full" onclick="shareCurrentResult()"><i class="ti ti-share"></i> Share Result</button>
+              <button class="btn success full" onclick="newChessMatch()"><i class="ti ti-plus"></i> New Game</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- END LIVE TAB -->
+
+    <!-- ══════════ HISTORY TAB ══════════ -->
+    <div class="section" id="section-history">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div class="section-title">Match History</div>
+          <button class="btn sm danger" onclick="clearHistory()"><i class="ti ti-trash"></i></button>
+        </div>
+        <div class="history-view-tabs">
+          <button class="btn sm primary-flat" id="hv-list-btn" onclick="showHistoryView('list')"><i class="ti ti-list"></i> Matches</button>
+          <button class="btn sm" id="hv-stats-btn" onclick="showHistoryView('stats')"><i class="ti ti-chart-bar"></i> Stats</button>
+          <button class="btn sm" id="hv-achieve-btn" onclick="showHistoryView('achieve')"><i class="ti ti-medal"></i> Achievements</button>
+          <button class="btn sm" id="hv-h2h-btn" onclick="showHistoryView('h2h')"><i class="ti ti-swords"></i> H2H</button>
+          <button class="btn sm" id="hv-cal-btn" onclick="showHistoryView('calendar')"><i class="ti ti-calendar"></i> Calendar</button>
+          <button class="btn sm" id="hv-pts-btn" onclick="showHistoryView('points')"><i class="ti ti-trophy"></i> Points</button>
+        </div>
+        <div id="hv-list">
+          <div id="history-list">
+            <div style="font-size:12px;color:var(--text3);text-align:center;padding:24px 0;">No matches yet. Play one to start your record!</div>
+          </div>
+        </div>
+        <div id="hv-stats" class="hidden">
+          <div style="font-weight:800;font-size:13px;margin-bottom:10px;">Player Stats</div>
+          <div id="player-stats-list"></div>
+        </div>
+        <div id="hv-achieve" class="hidden">
+          <div style="font-weight:800;font-size:13px;margin-bottom:10px;">All-Time Achievements</div>
+          <div id="achievements-list"></div>
+        </div>
+        <div id="hv-h2h" class="hidden">
+          <div style="font-weight:800;font-size:13px;margin-bottom:10px;">Head to Head & Rivalries</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+            <select id="h2h-player-a" onchange="renderH2H()"></select>
+            <select id="h2h-player-b" onchange="renderH2H()"></select>
+          </div>
+          <div id="h2h-content"></div>
+          <div style="font-weight:800;font-size:12px;margin-top:14px;margin-bottom:8px;">Historical Rivalries</div>
+          <div id="rivalries-list"></div>
+        </div>
+        <div id="hv-calendar" class="hidden">
+          <div class="cal-card">
+            <div class="cal-purple-bar"></div>
+            <div class="cal-nav">
+              <button class="cal-nav-btn" onclick="calPrev()"><i class="ti ti-chevron-left"></i></button>
+              <div class="cal-month-title" id="cal-month-label">May 2026</div>
+              <button class="cal-nav-btn" onclick="calNext()"><i class="ti ti-chevron-right"></i></button>
+            </div>
+            <div class="cal-dow-row">
+              <div>MON</div><div>TUE</div><div>WED</div>
+              <div>THU</div><div>FRI</div><div>SAT</div><div>SUN</div>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+          </div>
+          <div id="calendar-stats" class="cal-stats-pill">0 matches this month</div>
+        </div>
+        <div id="hv-points" class="hidden">
+          <div style="font-weight:800;font-size:14px;margin-bottom:4px;">Points Table</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">Fantasy-style leaderboard. Points accumulate across all matches.</div>
+          <div id="points-table"></div>
+          <!-- Scoring sliders -->
+          <div class="scoring-sliders-wrap" id="scoring-sliders-wrap" style="margin-top:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <div>
+                <div style="font-weight:800;font-size:13px;">Scoring sliders</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px;">Tune the points model for this room.</div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn sm" id="sliders-toggle-btn" onclick="toggleScoringSliders()"><i class="ti ti-adjustments-horizontal"></i> Adjust scoring</button>
+                <button class="btn sm danger" onclick="resetScoringModel()"><i class="ti ti-refresh"></i> Reset</button>
+              </div>
+            </div>
+            <div id="scoring-sliders-panel" class="hidden" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;overflow:hidden;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ SECONDARY SECTIONS (from More) ══════════ -->
+
+    <!-- PROFILES -->
+    <div class="section" id="section-profiles">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-id-badge"></i> Global Player Registry</div>
+      <div class="alert info" style="font-size:11px;margin-bottom:10px;">Each player has one global identity. Sport stats are tracked separately and never mixed.</div>
+      <div style="display:grid;gap:8px;">
+        <input type="text" id="library-name-input" placeholder="Player name..."/>
+        <select id="library-role-input">
+          <option>All-rounder</option><option>Batsman</option><option>Bowler</option><option>Wicket-keeper</option><option>Footballer</option><option>Shuttle Player</option>
+        </select>
+        <input type="text" id="library-trivia-input" placeholder="Fun fact / nickname..."/>
+        <div>
+          <button class="btn sm" onclick="document.getElementById('library-photo-input').click()"><i class="ti ti-camera"></i> Add photo</button>
+          <span id="library-photo-preview" style="font-size:11px;color:var(--text3);margin-left:8px;">No photo selected</span>
+        </div>
+        <input type="file" id="library-photo-input" accept="image/*" style="display:none" onchange="handleLibraryPhoto(event)"/>
+        <button class="btn primary full" onclick="addLibraryPlayer()"><i class="ti ti-plus"></i> Save to registry</button>
+      </div>
+      <div id="library-list" style="margin-top:12px;"></div>
+      <div id="library-clear-wrap" style="margin-top:10px;display:none;">
+        <button class="btn danger full sm" onclick="clearAllLibraryPlayers()"><i class="ti ti-trash"></i> Clear All Players</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-user-star"></i> Player Profiles</div>
+      <div class="section-subtitle" style="margin-top:0;">One identity, isolated sport profiles. Tap a card to view sport-by-sport history.</div>
+      <div class="roster-toolbar">
+        <div class="roster-sort-wrap">
+          <label for="profile-sort">Sort</label>
+          <select id="profile-sort" onchange="setRosterSort(this.value)">
+            <option value="name">Name (A-Z)</option>
+            <option value="rating">Rating (High to Low)</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+          <button class="btn xs primary-flat" id="prof-filter-all" onclick="setProfileSportFilter('all')">All Sports</button>
+          <button class="btn xs" id="prof-filter-cricket" onclick="setProfileSportFilter('cricket')"><i class="ti ti-cricket"></i> Cricket</button>
+          <button class="btn xs" id="prof-filter-football" onclick="setProfileSportFilter('football')"><i class="ti ti-ball-football"></i> Football</button>
+          <button class="btn xs" id="prof-filter-badminton" onclick="setProfileSportFilter('badminton')"><i class="ti ti-ping-pong"></i> Badminton</button>
+        </div>
+      </div>
+      <div id="profiles-list"></div>
+    </div>
+  </div>
+
+    <!-- GALLERY -->
+    <div class="section" id="section-gallery">
+      <div class="card">
+        <div class="card-title"><i class="ti ti-photo"></i> Global Gallery</div>
+        <input type="file" id="gallery-file-input" accept="image/*" multiple style="display:none;" onchange="addGalleryPhotos(event)"/>
+        <button class="btn primary full" onclick="document.getElementById('gallery-file-input').click()"><i class="ti ti-upload"></i> Upload Photos</button>
+        <div class="gallery-grid" id="gallery-grid" style="margin-top:10px;"><div class="gallery-empty">No photos yet.</div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="section" id="section-settings">
+      <div class="card">
+        <div class="card-title"><i class="ti ti-settings"></i> App Settings</div>
+        <div class="settings-row">
+          <div><div class="settings-row-label">Dark Mode</div><div class="settings-row-sub">Toggle light/dark appearance</div></div>
+          <button class="settings-toggle on" id="dark-toggle" onclick="toggleTheme(this)"></button>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label">Scorer / Viewer</div><div class="settings-row-sub" id="settings-mode-label">Currently: Scorer</div></div>
+          <button class="btn sm primary-flat" onclick="toggleMode()"><i class="ti ti-eye"></i> Toggle</button>
+        </div>
+        <div class="settings-row" style="border-bottom:none;">
+          <div><div class="settings-row-label">Sport</div><div class="settings-row-sub" id="settings-sport-label">Currently: None</div></div>
+          <button class="btn sm" onclick="goHome()"><i class="ti ti-refresh"></i> Change</button>
+        </div>
+        <div class="settings-row" style="border-bottom:none;display:block;">
+          <div><div class="settings-row-label">Commentary Language</div><div class="settings-row-sub" id="settings-commentary-label">Currently: English</div></div>
+          <select id="commentary-language-select" onchange="setCommentaryLanguage(this.value)" style="margin-top:8px;"></select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-users"></i> Room & Sync</div>
+        <div class="alert info" style="font-size:11px;">Admin can grant edit access to other devices via room code.</div>
+        <button class="btn full primary-flat mt-12" onclick="copyRoomLink()"><i class="ti ti-copy"></i> Copy Room Link</button>
+      </div>
+    </div>
+
+    <!-- HELP -->
+    <div class="section" id="section-help">
+      <div class="card">
+        <div class="card-title"><i class="ti ti-help-circle"></i> Quick Start Guide</div>
+        <div class="section-sub" style="margin-bottom:12px;">New to Arena? Here's how to get up and running in minutes.</div>
+        <div class="alert sport" style="font-size:11px;">① Choose a sport from the home screen — Cricket, Football, or Badminton.</div>
+        <div class="alert info" style="font-size:11px;">② Go to Match → Create or Join a room. Share the room code with friends.</div>
+        <div class="alert success" style="font-size:11px;">③ Set up your teams or players, then start the match.</div>
+        <div class="alert warn" style="font-size:11px;">④ Open the Live tab to score in real time. Friends on the same room see it instantly.</div>
+        <div class="alert" style="font-size:11px;background:var(--purple-l);color:var(--purple);border-color:var(--purple-m);">⑤ History tab shows all past matches with scorecards and gallery.</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-rocket"></i> Room Codes Explained</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;">
+          <div>• The <strong>Admin</strong> (room creator) has full edit access.</div>
+          <div>• <strong>Viewers</strong> can watch live scores but cannot change them.</div>
+          <div>• Share the code or link for others to join as viewers.</div>
+          <div>• Admin can promote a viewer to <strong>Editor</strong> for co-scoring.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end app-wrap -->
+
+  <!-- ══════ BOTTOM TAB BAR ══════ -->
+  <div class="tab-bar hidden-on-home" id="main-tab-bar">
+    <button class="tab active" id="tab-match" onclick="showTab('match')">
+      <i class="ti ti-users"></i>
+      <span class="tab-sidebar-label">Match</span>
+      <span class="tab-dot"></span>
+    </button>
+    <button class="tab" id="tab-live" onclick="showTab('live')">
+      <i class="ti ti-live-photo"></i>
+      <span class="tab-sidebar-label">Live</span>
+      <span class="tab-dot"></span>
+    </button>
+    <button class="tab" id="tab-history" onclick="showTab('history')">
+      <i class="ti ti-history"></i>
+      <span class="tab-sidebar-label">History</span>
+      <span class="tab-dot"></span>
+    </button>
+    <button class="tab" id="tab-more" onclick="openMore()">
+      <i class="ti ti-dots"></i>
+      <span class="tab-sidebar-label">More</span>
+      <span class="tab-dot"></span>
+    </button>
+  </div>
+</div><!-- end screen-app -->
+
+<!-- ═══════════════════════════════════════
+     MORE BOTTOM SHEET
+═══════════════════════════════════════ -->
+<div class="more-overlay hidden" id="more-overlay" onclick="closeMore()">
+  <div class="more-panel" onclick="event.stopPropagation()">
+    <div class="more-panel-header">
+      <div>
+        <div class="more-panel-title">More</div>
+        <div class="more-panel-sub">Secondary tools, settings, and help.</div>
+      </div>
+      <button type="button" class="more-close" onclick="closeMore()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="more-list">
+      <button type="button" class="more-item" onclick="navigateMore('profiles')">
+        <div><strong>Profiles</strong><span>Player library, stats, and saved players.</span></div>
+        <i class="ti ti-user-star"></i>
+      </button>
+      <button type="button" class="more-item" onclick="navigateMore('gallery')">
+        <div><strong>Gallery</strong><span>Upload and browse all match photos.</span></div>
+        <i class="ti ti-photo"></i>
+      </button>
+      <button type="button" class="more-item" onclick="navigateMore('settings')">
+        <div><strong>App Settings</strong><span>Theme, mode, sport, and room preferences.</span></div>
+        <i class="ti ti-settings"></i>
+      </button>
+      <button type="button" class="more-item" onclick="navigateMore('room')">
+        <div><strong>Room</strong><span>Your live room code, members, and controls.</span></div>
+        <i class="ti ti-users"></i>
+      </button>
+      <button type="button" class="more-item" onclick="navigateMore('help')">
+        <div><strong>Help & Quick Start</strong><span>Room codes, admin roles, and how to score.</span></div>
+        <i class="ti ti-help-circle"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Room section removed — room opens as overlay -->
+
+<!-- ═══ MATCH SUMMARY MODAL ═══ -->
+<div class="msummary-overlay" id="msummary-overlay" onclick="closeSummary(event)">
+  <div class="msummary-sheet" id="msummary-sheet" onclick="event.stopPropagation()">
+    <div class="msummary-handle"></div>
+
+    <!-- Hero -->
+    <div class="msummary-hero">
+      <div class="msummary-hero-confetti" id="msummary-confetti"></div>
+      <div class="msummary-trophy" id="msummary-trophy"><i class="ti ti-trophy" style="color:#ffd700;font-size:52px;filter:drop-shadow(0 0 20px rgba(255,215,0,.4));"></i></div>
+      <div class="msummary-result-title" id="msummary-result-title">—</div>
+      <div class="msummary-result-sub" id="msummary-result-sub"></div>
+    </div>
+
+    <!-- Score board -->
+    <div class="msummary-scores">
+      <div class="msummary-team-score">
+        <div class="msummary-team-label" id="msummary-team-a-label">Team A</div>
+        <div class="msummary-team-runs" id="msummary-team-a-runs">—</div>
+      </div>
+      <div class="msummary-vs-divider">VS</div>
+      <div class="msummary-team-score right">
+        <div class="msummary-team-label" id="msummary-team-b-label">Team B</div>
+        <div class="msummary-team-runs" id="msummary-team-b-runs">—</div>
+      </div>
+    </div>
+
+    <!-- Innings comparison bars -->
+    <div class="msummary-section">
+      <div class="msummary-section-title"><i class="ti ti-chart-bar"></i> Innings</div>
+      <div class="msummary-inn-bars" id="msummary-inn-bars"></div>
+    </div>
+
+    <!-- Top performers -->
+    <div class="msummary-section">
+      <div class="msummary-section-title"><i class="ti ti-flame"></i> Top Performers</div>
+      <div class="msummary-performers" id="msummary-performers"></div>
+    </div>
+
+    <!-- Highlights -->
+    <div class="msummary-section">
+      <div class="msummary-section-title"><i class="ti ti-bolt"></i> Match Highlights</div>
+      <div class="msummary-highlights" id="msummary-highlights"></div>
+    </div>
+
+    <!-- MOTM strip -->
+    <div class="msummary-motm-strip" id="msummary-motm-strip" onclick="openMOTMFromSummary()">
+      <div class="msummary-motm-avatar" id="msummary-motm-avatar"></div>
+      <div class="msummary-motm-info">
+        <div class="msummary-motm-label"><i class="ti ti-star-filled" style="color:#ffd700;font-size:13px;vertical-align:-1px;margin-right:4px;"></i>Player of the Match</div>
+        <div class="msummary-motm-name" id="msummary-motm-name">—</div>
+        <div class="msummary-motm-stats" id="msummary-motm-stats"></div>
+      </div>
+      <div class="msummary-motm-arrow"><i class="ti ti-chevron-right"></i></div>
+    </div>
+
+    <!-- MOTS strip (series only) -->
+    <div class="msummary-mots-strip hidden" id="msummary-mots-strip" onclick="openMOTSCard()">
+      <div class="msummary-mots-crown"><i class="ti ti-crown" style="color:#c4b5fd;font-size:22px;"></i></div>
+      <div class="msummary-mots-info">
+        <div class="msummary-mots-label"><i class="ti ti-medal" style="color:#c4b5fd;font-size:12px;vertical-align:-1px;margin-right:4px;"></i>Man of the Series</div>
+        <div class="msummary-mots-name" id="msummary-mots-name">—</div>
+        <div class="msummary-mots-stats" id="msummary-mots-stats"></div>
+      </div>
+      <div class="msummary-mots-arrow"><i class="ti ti-chevron-right"></i></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="msummary-actions">
+      <button class="msummary-action-btn warn" onclick="openMOTMFromSummary()"><i class="ti ti-award"></i> MOTM Card</button>
+      <button class="msummary-action-btn" id="mots-action-btn" style="background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(245,158,11,.15));border:1px solid rgba(139,92,246,.4);color:#c4b5fd;display:none;" onclick="openMOTSCard()"><i class="ti ti-crown"></i> MOTS Card</button>
+      <button class="msummary-action-btn primary" onclick="shareCurrentResult(); closeSummary()"><i class="ti ti-share"></i> Share</button>
+      <button class="msummary-action-btn success" onclick="closeSummary(); newCricketMatch()"><i class="ti ti-plus"></i> New Match</button>
+      <button class="msummary-action-btn neutral" onclick="closeSummary()"><i class="ti ti-x"></i> Close</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ MOTM CARD MODAL ═══ -->
+<div class="motm-overlay" id="motm-overlay" onclick="closeMOTM()">
+  <div class="motm-modal-wrap" onclick="event.stopPropagation()">
+
+    <!-- Downloadable Card -->
+    <div class="motm-card" id="motm-card">
+
+      <!-- Hero Image Zone -->
+      <div class="motm-hero" id="motm-hero">
+        <div class="motm-hero-bg-pattern"></div>
+        <div id="motm-particles"></div>
+        <div class="motm-rarity"><i class="ti ti-star-filled" style="color:#ffd700;font-size:12px;vertical-align:-1px;margin-right:3px;"></i>Player of the Match</div>
+        <div class="motm-social-icon"><i class="ti ti-cricket" style="font-size:18px;color:var(--cricket-primary);"></i></div>
+        <div class="motm-hero-avatar" id="motm-avatar"></div>
+        <div class="motm-score-chip" id="motm-score-chip">0 pts</div>
+      </div>
+
+      <!-- Name + Team -->
+      <div class="motm-info">
+        <div class="motm-name" id="motm-name">—</div>
+        <div class="motm-team-row">
+          <div class="motm-team-dot" id="motm-team-initial">A</div>
+          <div class="motm-team-name" id="motm-team-name">Team</div>
+        </div>
+      </div>
+
+      <div class="motm-divider"></div>
+
+      <!-- Stats Grid -->
+      <div class="motm-stats" id="motm-stats-grid">
+        <!-- filled by JS -->
+      </div>
+
+      <!-- Bottom metrics row -->
+      <div class="motm-earnings-row">
+        <div class="motm-earn-cell">
+          <div class="motm-earn-label">Strike Rate</div>
+          <div class="motm-earn-val" id="motm-sr">—</div>
+        </div>
+        <div class="motm-earn-divider"></div>
+        <div class="motm-earn-cell">
+          <div class="motm-earn-label">Contribution</div>
+          <div class="motm-dist">
+            <div class="motm-dist-dot" style="background:#4ade80;"></div>
+            <div class="motm-dist-num" id="motm-bat-pct">—</div>
+            <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,.35);margin:0 2px;">|</div>
+            <div class="motm-dist-dot" style="background:#a78bfa;"></div>
+            <div class="motm-dist-num" id="motm-bowl-pct">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="motm-footer">
+        <div class="motm-footer-brand"><i class="ti ti-trophy" style="color:#ffd700;font-size:14px;vertical-align:-2px;margin-right:4px;"></i>ARENA · Match Hub</div>
+        <div class="motm-footer-badge" id="motm-match-date">Today</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="motm-actions">
+      <button class="motm-btn motm-btn-download" onclick="downloadMOTMCard()">
+        <i class="ti ti-download" style="font-size:18px;"></i> Save as PNG
+      </button>
+      <button class="motm-btn motm-btn-close" onclick="closeMOTM()">
+        <i class="ti ti-x"></i> Close
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ MAN OF THE SERIES (MOTS) CARD MODAL ═══ -->
+<div class="mots-overlay" id="mots-overlay" onclick="closeMOTS()">
+  <div class="mots-modal-wrap" onclick="event.stopPropagation()">
+
+    <div class="mots-card" id="mots-card">
+      <div class="mots-card-inner">
+
+        <div class="mots-hero" id="mots-hero">
+          <div class="mots-nebula"></div>
+          <div id="mots-particles"></div>
+          <div class="mots-crown-badge">
+            <i class="ti ti-crown" style="color:#c4b5fd;font-size:14px;"></i>
+            <span>Man of the Series</span>
+            <i class="ti ti-crown" style="color:#c4b5fd;font-size:14px;"></i>
+          </div>
+          <div class="mots-avatar-ring" id="mots-avatar-ring">
+            <div class="mots-avatar-inner" id="mots-avatar"></div>
+          </div>
+          <div class="mots-mvp-chip" id="mots-mvp-chip">Series MVP</div>
+          <div class="mots-stars">
+            <i class="ti ti-star-filled mots-star"></i>
+            <i class="ti ti-star-filled mots-star"></i>
+            <i class="ti ti-star-filled mots-star"></i>
+            <i class="ti ti-star-filled mots-star"></i>
+            <i class="ti ti-star-filled mots-star"></i>
+          </div>
+        </div>
+
+        <div class="mots-info">
+          <div class="mots-name" id="mots-name">—</div>
+          <div class="mots-team-row">
+            <div class="mots-team-pill">
+              <div class="mots-team-dot" id="mots-team-initial">A</div>
+              <span id="mots-team-name">Team</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mots-divider"></div>
+
+        <div class="mots-series-label" id="mots-series-label">Series Aggregate</div>
+
+        <div class="mots-stats" id="mots-stats-grid"></div>
+
+        <div class="mots-series-record">
+          <div class="mots-record-cell">
+            <div class="mots-record-val purple" id="mots-matches">—</div>
+            <div class="mots-record-lbl">Matches</div>
+          </div>
+          <div class="mots-record-cell">
+            <div class="mots-record-val gold" id="mots-sr">—</div>
+            <div class="mots-record-lbl">Strike Rate</div>
+          </div>
+          <div class="mots-record-cell">
+            <div class="mots-record-val amber" id="mots-economy">—</div>
+            <div class="mots-record-lbl">Economy</div>
+          </div>
+        </div>
+
+        <div class="mots-footer">
+          <div class="mots-footer-brand"><i class="ti ti-trophy" style="color:#c4b5fd;font-size:13px;vertical-align:-2px;margin-right:4px;"></i>ARENA · Match Hub</div>
+          <div class="mots-footer-badge" id="mots-series-info">Series</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="mots-actions">
+      <button class="mots-btn mots-btn-download" onclick="downloadMOTSCard()">
+        <i class="ti ti-download" style="font-size:18px;"></i> Save as PNG
+      </button>
+      <button class="mots-btn mots-btn-close" onclick="closeMOTS()">
+        <i class="ti ti-x"></i> Close
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══ EXTRAS MODAL (Cricket) ═══ -->
+<div class="modal-overlay hidden" id="extras-modal">
+  <div class="modal-box">
+    <h3><i class="ti ti-plus-minus"></i> Extras</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button class="btn warn full" onclick="cricketExtra('wide')">Wide (+1)</button>
+      <button class="btn warn full" onclick="cricketExtra('noball')">No Ball (+1)</button>
+      <button class="btn orange full" onclick="cricketExtra('bye')">Bye</button>
+      <button class="btn orange full" onclick="cricketExtra('legbye')">Leg Bye</button>
+    </div>
+    <button class="btn full mt-12" onclick="closeModal('extras-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══ FOOTBALL PLAYER PICKER MODAL ═══ -->
+<!-- Next bowler modal (Cricket) -->
+<div class="modal-overlay hidden" id="next-bowler-modal">
+  <div class="modal-box">
+    <h3><i class="ti ti-target-arrow"></i> Next Bowler</h3>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">Over complete. Choose who bowls next.</div>
+    <select id="next-bowler-sel"></select>
+    <button class="btn primary full mt-12" onclick="confirmNextBowler()">Set Bowler</button>
+  </div>
+</div>
+
+<!-- Next batsman modal (Cricket) -->
+<div class="modal-overlay hidden" id="next-batsman-modal">
+  <div class="modal-box">
+    <h3><i class="ti ti-cricket"></i> Wicket! Next Batsman?</h3>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">Select the next batsman to come in.</div>
+    <select id="next-batsman-sel"></select>
+    <button class="btn primary full mt-12" onclick="confirmNextBatsman()"><i class="ti ti-check"></i> Confirm</button>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="fb-player-modal">
+  <div class="modal-box">
+    <h3 id="fb-player-modal-title"><i class="ti ti-card-clubs"></i> Select Player Number</h3>
+    <div class="fb-player-grid" id="fb-player-grid"></div>
+    <button class="btn full mt-12" onclick="closeModal('fb-player-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══ HISTORY DETAIL MODAL ═══ -->
+<div class="modal-overlay hidden" id="history-detail-modal">
+  <div class="modal-box">
+    <div id="history-detail-content"></div>
+    <button class="btn full mt-12" onclick="closeModal('history-detail-modal')">Close</button>
+  </div>
+</div>
+
+<!-- ═══ PLAYER DETAIL MODAL ═══ -->
+<div class="modal-overlay hidden" id="player-detail-modal" onclick="closeModal('player-detail-modal')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:560px;padding:0;overflow:hidden;border-radius:22px;">
+    <!-- Identity header -->
+    <div id="player-detail-identity" style="padding:20px 20px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);"></div>
+    <!-- Sport tabs -->
+    <div style="display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--surface);">
+      <button class="pdetail-sport-tab" id="pdt-overview" onclick="showPlayerDetailTab('overview')"><i class="ti ti-layout-grid"></i> Overview</button>
+      <button class="pdetail-sport-tab" id="pdt-cricket" onclick="showPlayerDetailTab('cricket')"><i class="ti ti-cricket"></i> Cricket</button>
+      <button class="pdetail-sport-tab" id="pdt-football" onclick="showPlayerDetailTab('football')"><i class="ti ti-ball-football"></i> Football</button>
+      <button class="pdetail-sport-tab" id="pdt-badminton" onclick="showPlayerDetailTab('badminton')"><i class="ti ti-ping-pong"></i> Badminton</button>
+    </div>
+    <!-- Tab content -->
+    <div id="player-detail-content" style="padding:16px 20px;max-height:60vh;overflow-y:auto;"></div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px 20px;border-top:1px solid var(--border);">
+      <button class="btn full" onclick="closeModal('player-detail-modal')"><i class="ti ti-x"></i> Close</button>
+      <button class="btn danger" id="player-detail-delete-btn" onclick="deletePlayerFromDetail()"><i class="ti ti-trash"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ACHIEVEMENT LEADERBOARD SHEET ═══ -->
+<!-- ═══ PHOTO EDITOR BOTTOM SHEET ═══ -->
+<style>
+/* ═══ PHOTO EDIT MODAL — clean minimal sheet ═══ */
+#photo-crop-modal{
+  position:fixed;inset:0;z-index:600;
+  display:flex;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+#photo-crop-modal.hidden{display:none!important;}
+
+.photo-sheet{
+  width:min(480px,100%);
+  background:linear-gradient(180deg,rgba(12,17,32,.98) 0%,rgba(7,10,20,.99) 100%);
+  border:1px solid rgba(255,255,255,.09);
+  border-bottom:none;
+  border-radius:32px 32px 0 0;
+  box-shadow:0 -12px 60px rgba(0,0,0,.8);
+  overflow:hidden;
+  padding-bottom:max(20px,env(safe-area-inset-bottom));
+}
+
+.photo-sheet-handle{
+  width:36px;height:4px;border-radius:999px;
+  background:rgba(255,255,255,.15);
+  margin:12px auto 0;
+}
+
+/* ── Avatar section ── */
+.pse-avatar-row{
+  display:flex;flex-direction:column;align-items:center;
+  padding:22px 24px 0;gap:0;
+}
+.pse-avatar-wrap{
+  position:relative;width:96px;height:96px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.pse-avatar-wrap:active{opacity:.8;}
+.pse-avatar-circle{
+  width:96px;height:96px;border-radius:50%;
+  overflow:hidden;
+  background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(99,102,241,.12));
+  border:2.5px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .2s;
+}
+.pse-avatar-wrap:hover .pse-avatar-circle{border-color:var(--sport-primary);}
+.pse-avatar-circle img{width:100%;height:100%;object-fit:cover;display:block;}
+.pse-avatar-initial{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:2.2rem;font-weight:900;color:rgba(255,255,255,.5);
+}
+.pse-avatar-camera{
+  position:absolute;bottom:0;right:0;
+  width:30px;height:30px;border-radius:50%;
+  background:var(--sport-primary);
+  border:2.5px solid rgba(7,10,20,1);
+  display:grid;place-items:center;
+  font-size:13px;color:#fff;
+  box-shadow:0 3px 10px rgba(0,0,0,.4);
+}
+.pse-player-name{
+  margin-top:12px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1.25rem;font-weight:900;letter-spacing:.03em;color:var(--text);
+}
+.pse-player-hint{
+  margin-top:3px;
+  font-size:11px;color:var(--text3);letter-spacing:.02em;
+}
+
+/* ── Zoom strip (compact) ── */
+.pse-zoom-strip{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 28px 0;
+}
+.pse-zoom-btn{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  display:grid;place-items:center;cursor:pointer;
+  color:var(--text3);font-size:14px;flex-shrink:0;
+  transition:all .15s;-webkit-tap-highlight-color:transparent;
+}
+.pse-zoom-btn:active{background:rgba(255,255,255,.14);color:var(--text);}
+#crop-zoom-slider{
+  flex:1;-webkit-appearance:none;appearance:none;
+  height:3px;border-radius:999px;outline:none;border:none;cursor:pointer;
+  background:linear-gradient(90deg, var(--sport-primary) 0%, rgba(255,255,255,.1) 0%);
+}
+#crop-zoom-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:16px;height:16px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.5);
+  cursor:grab;border:2px solid var(--sport-primary);
+}
+#crop-zoom-slider::-webkit-slider-thumb:active{cursor:grabbing;}
+.pse-zoom-pct{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:900;color:var(--text3);
+  min-width:34px;text-align:right;flex-shrink:0;
+}
+
+/* ── Action buttons (vertical list) ── */
+.pse-actions{
+  display:flex;flex-direction:column;gap:8px;
+  padding:18px 20px 4px;
+}
+.pse-btn{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 16px;border-radius:16px;
+  border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.04);
+  cursor:pointer;transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+  text-decoration:none;
+}
+.pse-btn:active{transform:scale(.98);opacity:.85;}
+.pse-btn-icon{
+  width:38px;height:38px;border-radius:12px;
+  display:grid;place-items:center;font-size:17px;flex-shrink:0;
+}
+.pse-btn-text{flex:1;}
+.pse-btn-label{font-size:14px;font-weight:700;color:var(--text);line-height:1;}
+.pse-btn-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.pse-btn-chevron{color:var(--text3);font-size:13px;flex-shrink:0;}
+
+.pse-btn.upload .pse-btn-icon{background:rgba(56,189,248,.12);color:#38bdf8;}
+.pse-btn.upload:hover{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.2);}
+.pse-btn.save .pse-btn-icon{background:rgba(74,222,128,.12);color:#4ade80;}
+.pse-btn.save:hover{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.2);}
+.pse-btn.remove .pse-btn-icon{background:rgba(248,113,113,.1);color:#f87171;}
+.pse-btn.remove:hover{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.2);}
+
+.pse-cancel{
+  margin:10px 20px 0;
+  padding:13px;border-radius:14px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  font-size:14px;font-weight:700;color:var(--text3);
+  text-align:center;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:all .15s;
+}
+.pse-cancel:active{opacity:.7;}
+</style>
+
+<div class="hidden" id="photo-crop-modal" onclick="closeCropModal()">
+  <div class="photo-sheet" onclick="event.stopPropagation()">
+    <div class="photo-sheet-handle"></div>
+
+    <!-- Avatar + name -->
+    <div class="pse-avatar-row">
+      <label class="pse-avatar-wrap" for="crop-file-input" title="Tap to change photo">
+        <div class="pse-avatar-circle" id="pse-avatar-circle">
+          <canvas id="crop-canvas" style="width:100%;height:100%;display:block;touch-action:none;cursor:grab;border-radius:50%;"></canvas>
+        </div>
+        <div class="pse-avatar-camera"><i class="ti ti-camera"></i></div>
+      </label>
+      <input type="file" id="crop-file-input" accept="image/*" style="display:none;" onchange="onCropFileChange(event)">
+      <div class="pse-player-name" id="pse-player-name">Player</div>
+      <div class="pse-player-hint">Tap the photo to change · Drag to reposition</div>
+    </div>
+
+    <!-- Zoom (only visible when photo loaded) -->
+    <div class="pse-zoom-strip" id="pse-zoom-strip" style="display:none;">
+      <div class="pse-zoom-btn" onclick="_stepZoom(-0.1)"><i class="ti ti-minus"></i></div>
+      <input type="range" id="crop-zoom-slider" min="50" max="300" value="100" oninput="onCropZoomSlider(this.value)">
+      <div class="pse-zoom-btn" onclick="_stepZoom(0.1)"><i class="ti ti-plus"></i></div>
+      <div class="pse-zoom-pct" id="crop-zoom-pct">100%</div>
+    </div>
+
+    <!-- Actions -->
+    <div class="pse-actions">
+      <label class="pse-btn upload" for="crop-file-input" style="cursor:pointer;">
+        <div class="pse-btn-icon"><i class="ti ti-photo-up"></i></div>
+        <div class="pse-btn-text">
+          <div class="pse-btn-label">Choose Photo</div>
+          <div class="pse-btn-sub">From camera roll or files</div>
+        </div>
+        <i class="ti ti-chevron-right pse-btn-chevron"></i>
+      </label>
+
+      <div class="pse-btn save" onclick="saveCroppedPhoto()">
+        <div class="pse-btn-icon"><i class="ti ti-check"></i></div>
+        <div class="pse-btn-text">
+          <div class="pse-btn-label">Save Photo</div>
+          <div class="pse-btn-sub">Apply to player profile</div>
+        </div>
+        <i class="ti ti-chevron-right pse-btn-chevron"></i>
+      </div>
+
+      <div class="pse-btn remove" onclick="removePlayerPhoto()">
+        <div class="pse-btn-icon"><i class="ti ti-trash"></i></div>
+        <div class="pse-btn-text">
+          <div class="pse-btn-label">Remove Photo</div>
+          <div class="pse-btn-sub">Clear current photo</div>
+        </div>
+        <i class="ti ti-chevron-right pse-btn-chevron"></i>
+      </div>
+    </div>
+
+    <div class="pse-cancel" onclick="closeCropModal()">Cancel</div>
+  </div>
+</div>
+
+<div class="ach-sheet-overlay" id="ach-sheet-overlay" onclick="closeAchSheet()">
+  <div class="ach-sheet" onclick="event.stopPropagation()">
+    <div class="ach-sheet-handle"></div>
+    <div class="ach-sheet-header">
+      <div class="ach-sheet-icon" id="ach-sheet-icon"></div>
+      <div class="ach-sheet-titles">
+        <div class="ach-sheet-title" id="ach-sheet-title"></div>
+        <div class="ach-sheet-sub" id="ach-sheet-sub"></div>
+      </div>
+      <div class="ach-sheet-close" onclick="closeAchSheet()"><i class="ti ti-x"></i></div>
+    </div>
+    <div id="ach-sheet-body"></div>
+  </div>
+</div>
+
+  <!-- App Scripts -->
+  <script src="scripts/storage.js"></script>
+  <script src="scripts/state.js"></script>
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/commentary.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/cricket.js"></script>
+  <script src="scripts/football.js"></script>
+  <script src="scripts/badminton.js"></script>
+  <script src="scripts/pickleball.js"></script>
+  <script src="scripts/chess.js"></script>
+  <script src="scripts/history.js"></script>
+  <script src="scripts/gallery.js"></script>
+  <script src="scripts/profiles.js"></script>
+  <script src="scripts/awards.js"></script>
+  <script src="scripts/room.js"></script>
+  <script src="scripts/gateway.js"></script>
+  <script src="scripts/squad.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>
