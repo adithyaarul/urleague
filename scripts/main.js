@@ -10,27 +10,6 @@ renderLibrary();
 renderProfiles();
 renderGatewayRecent();
 
-// ══ SQUAD NAME personalisation ══
-function showSquadName() {
-  const current = localStorage.getItem('arena_squad_name') || '';
-  const name = prompt('What do you call your squad?', current);
-  if (name !== null) {
-    const trimmed = name.trim();
-    localStorage.setItem('arena_squad_name', trimmed);
-    updateGreeting();
-    toast(trimmed ? `Squad set to "${trimmed}" 🎉` : 'Squad name cleared');
-  }
-}
-
-function updateGreeting() {
-  const el = document.getElementById('gw-greeting-text');
-  if (!el) return;
-  const squad = localStorage.getItem('arena_squad_name');
-  const hour  = new Date().getHours();
-  const time  = hour < 12 ? 'Morning' : hour < 17 ? 'Afternoon' : 'Evening';
-  el.textContent = squad ? `${time}, ${squad} 👋` : `Hey, Squad 👋`;
-}
-
 // ── Gateway "Jump back in" recent sports ──
 function renderGatewayRecent() {
   const section = document.getElementById('gateway-recent-section');
@@ -67,54 +46,6 @@ function renderGatewayRecent() {
 // ── URL / hash routing ──
 // The gateway IS the home page. If the URL has no hash (or #home), always show gateway.
 // Only go directly into a sport if the hash matches e.g. #cricket
-// ── PWA Service Worker ──
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('SW registered:', reg.scope))
-      .catch(err => console.log('SW failed:', err));
-  });
-}
-
-// ── PWA Install prompt ──
-let _deferredInstall = null;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  _deferredInstall = e;
-  // Show install banner after 30s if not dismissed
-  setTimeout(() => {
-    if (_deferredInstall) showInstallBanner();
-  }, 30000);
-});
-
-function showInstallBanner() {
-  if (document.getElementById('install-banner')) return;
-  const banner = document.createElement('div');
-  banner.id = 'install-banner';
-  banner.innerHTML = `
-    <div class="install-banner">
-      <div class="install-banner-icon"><i class="ti ti-download"></i></div>
-      <div class="install-banner-text">
-        <div class="install-banner-title">Add to Home Screen</div>
-        <div class="install-banner-sub">Use Arena offline — no app store needed</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0;">
-        <button class="install-btn-yes" onclick="installPWA()">Install</button>
-        <button class="install-btn-no" onclick="document.getElementById('install-banner').remove();_deferredInstall=null;">✕</button>
-      </div>
-    </div>`;
-  document.body.appendChild(banner);
-}
-
-async function installPWA() {
-  if (!_deferredInstall) return;
-  _deferredInstall.prompt();
-  const { outcome } = await _deferredInstall.userChoice;
-  _deferredInstall = null;
-  document.getElementById('install-banner')?.remove();
-  if (outcome === 'accepted') toast('Arena installed! 🎉 Find it on your home screen.');
-}
-
 (function initRoute() {
   const hash = window.location.hash.replace('#', '').toLowerCase();
   const validSports = ['cricket', 'football', 'badminton', 'pickleball', 'chess'];

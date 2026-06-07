@@ -1,4 +1,4 @@
-// ─── State: DEFAULT_STATE, S, save/load, blank helpers ───
+// ─── State ───
 
 
 // ═══════════════════════════════════════════════════════

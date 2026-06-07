@@ -327,7 +327,6 @@ function goHome() {
   }
   // Refresh the "Jump back in" strip
   renderGatewayRecent();
-updateGreeting();
 }
 
 // ═══════════════════════════════════════════════════════

@@ -439,12 +439,12 @@ function _drawChessBoard() {
   const sq = size / 8;
 
   // Board colors — classic chess.com green theme
-  const lightSq = '#F2B8BC';   // soft pink (light squares)
-  const darkSq  = '#4A7C5F';   // forest green (dark squares)
-  const selectedHL  = 'rgba(30, 100, 60, 0.55)';   // green tint for selected
-  const lastMoveHL  = 'rgba(255, 180, 180, 0.55)';  // pink tint for last move
-  const legalDotClr = 'rgba(30, 80, 50, 0.25)';     // dark green dot
-  const captureHL   = 'rgba(200, 50, 80, 0.4)';     // red-pink capture ring
+  const lightSq = '#EEEED2';
+  const darkSq  = '#769656';
+  const selectedHL  = 'rgba(20, 85, 30, 0.5)';
+  const lastMoveHL  = 'rgba(205, 210, 106, 0.45)';
+  const legalDotClr = 'rgba(0, 0, 0, 0.2)';
+  const captureHL   = 'rgba(255, 80, 80, 0.35)';
 
   // ── 1. Draw squares ──
   for (let r = 0; r < 8; r++) {

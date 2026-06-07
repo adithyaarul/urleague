@@ -200,4 +200,3 @@
 /* profile-stat-box (already overridden above but ensure text) */
 :root[data-theme='light'] .profile-stat-val { color: var(--text) !important; }
 :root[data-theme='light'] .profile-stat-label { color: var(--text3) !important; }
-

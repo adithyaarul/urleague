@@ -7,14 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="theme-color" content="#03060c"/>
-<title>Arena · Your Squad's Scorebook</title>
-  <meta name="description" content="Track every match, every win, every stat with your squad. Cricket, Football, Badminton, Pickleball and Chess — all in one place.">
-  <link rel="manifest" href="manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Arena">
-  <link rel="apple-touch-icon" href="assets/icon-192.png">
+<title>Arena · Multi-Sport Scoring Hub</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -605,15 +598,15 @@
   <!-- Page header -->
   <div class="gw-header">
     <div>
-      <div class="gw-greeting" id="gw-greeting-text">Hey, Squad 👋</div>
-      <div class="gw-headline">Who's the <span>GOAT</span> today?</div>
+      <div class="gw-greeting">Multi-Sport Scoring Hub</div>
+      <div class="gw-headline">Pick Your <span>Sport</span></div>
     </div>
-    <div class="gw-avatar" onclick="showSquadName()"><i class="ti ti-users"></i></div>
+    <div class="gw-avatar"><i class="ti ti-trophy"></i></div>
   </div>
 
   <!-- Section label -->
   <div class="gw-section-label">
-    Pick a sport <span>Swipe to explore →</span>
+    Sports <span>Swipe to explore →</span>
   </div>
 
   <!-- Peeking carousel -->
@@ -668,7 +661,7 @@
         <div class="gw-card-tint"></div>
         <div class="gw-card-live"></div>
         <div class="gw-card-body">
-          <div class="gw-card-icon"><i class="ti ti-tennis"></i></div>
+          <div class="gw-card-icon" style="font-size:22px;font-style:normal;">🏓</div>
           <div class="gw-card-label">Pickleball</div>
           <div class="gw-card-desc">Rally scoring & kitchen faults</div>
           <button class="gw-card-cta" onclick="event.stopPropagation();selectSport('pickleball')">
@@ -1133,7 +1126,7 @@
             <div class="margin" id="result-margin"></div>
             <div style="display:grid;gap:8px;margin-top:16px;">
               <button class="btn warn full" onclick="showMatchSummary()"><i class="ti ti-chart-bar"></i> Match Summary</button>
-              <button class="btn primary full" onclick="shareCurrentResult()"><i class="ti ti-share"></i> Share Result</button>
+              <button class="btn primary full" onclick="shareMatchCard()"><i class="ti ti-share"></i> Share Result</button>
               <button class="btn success full" onclick="newCricketMatch()"><i class="ti ti-plus"></i> New Match</button>
             </div>
           </div>
@@ -1295,10 +1288,7 @@
             <div style="font-size:48px;"><i class="ti ti-trophy" style="color:#ffd700;font-size:48px;filter:drop-shadow(0 0 20px rgba(255,215,0,.5));"></i></div>
             <div class="winner-name" id="bd-result-winner"></div>
             <div class="margin" id="bd-result-margin"></div>
-            <div style="display:grid;gap:8px;margin-top:16px;">
-              <button class="btn primary full" onclick="shareCurrentResult()"><i class="ti ti-share"></i> Share Result</button>
-              <button class="btn success full" onclick="newBadmintonMatch()"><i class="ti ti-plus"></i> New Match</button>
-            </div>
+            <button class="btn success full mt-12" onclick="newBadmintonMatch()"><i class="ti ti-plus"></i> New Match</button>
           </div>
         </div>
       </div>
@@ -1357,10 +1347,7 @@
             <div style="font-size:48px;"><i class="ti ti-trophy" style="color:#ffd700;font-size:48px;filter:drop-shadow(0 0 20px rgba(255,215,0,.5));"></i></div>
             <div class="winner-name" id="pb-result-winner"></div>
             <div class="margin" id="pb-result-margin"></div>
-            <div style="display:grid;gap:8px;margin-top:16px;">
-              <button class="btn primary full" onclick="shareCurrentResult()"><i class="ti ti-share"></i> Share Result</button>
-              <button class="btn success full" onclick="newPickleballMatch()"><i class="ti ti-plus"></i> New Match</button>
-            </div>
+            <button class="btn success full mt-12" onclick="newPickleballMatch()"><i class="ti ti-plus"></i> New Match</button>
           </div>
         </div>
       </div>
@@ -1475,10 +1462,7 @@
             <div style="font-size:48px;">♔</div>
             <div class="winner-name" id="ch-result-winner"></div>
             <div class="margin" id="ch-result-reason"></div>
-            <div style="display:grid;gap:8px;margin-top:16px;">
-              <button class="btn primary full" onclick="shareCurrentResult()"><i class="ti ti-share"></i> Share Result</button>
-              <button class="btn success full" onclick="newChessMatch()"><i class="ti ti-plus"></i> New Game</button>
-            </div>
+            <button class="btn success full mt-12" onclick="newChessMatch()"><i class="ti ti-plus"></i> New Game</button>
           </div>
         </div>
       </div>
@@ -1806,7 +1790,7 @@
     <div class="msummary-actions">
       <button class="msummary-action-btn warn" onclick="openMOTMFromSummary()"><i class="ti ti-award"></i> MOTM Card</button>
       <button class="msummary-action-btn" id="mots-action-btn" style="background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(245,158,11,.15));border:1px solid rgba(139,92,246,.4);color:#c4b5fd;display:none;" onclick="openMOTSCard()"><i class="ti ti-crown"></i> MOTS Card</button>
-      <button class="msummary-action-btn primary" onclick="shareCurrentResult(); closeSummary()"><i class="ti ti-share"></i> Share</button>
+      <button class="msummary-action-btn primary" onclick="shareMatchCard(); closeSummary()"><i class="ti ti-share"></i> Share</button>
       <button class="msummary-action-btn success" onclick="closeSummary(); newCricketMatch()"><i class="ti ti-plus"></i> New Match</button>
       <button class="msummary-action-btn neutral" onclick="closeSummary()"><i class="ti ti-x"></i> Close</button>
     </div>
@@ -2276,7 +2260,6 @@
   <script src="scripts/awards.js"></script>
   <script src="scripts/room.js"></script>
   <script src="scripts/gateway.js"></script>
-  <script src="scripts/squad.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 </html>

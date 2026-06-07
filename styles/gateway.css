@@ -10,7 +10,11 @@
   overflow-x:hidden;
   background:var(--bg);
 }
-#screen-gateway.active{display:block;}
+#screen-gateway.active{
+  display:block;
+  min-height:100dvh;
+  min-height:100vh;
+}
 
 /* ── Page header ── */
 .gw-header{
@@ -48,10 +52,14 @@
 /* ── Peeking carousel viewport ── */
 .gw-carousel-viewport{
   overflow:hidden;
-  padding:0 0 8px 20px;   /* left padding so first card has breathing room */
+  padding:0 0 8px 20px;
   cursor:grab;
   -webkit-tap-highlight-color:transparent;
   touch-action:pan-y;
+  /* Height: fill screen minus header (~88px) minus section-label (~44px) minus dots (~54px) */
+  height:calc(100dvh - 88px - 44px - 54px);
+  height:calc(100vh - 88px - 44px - 54px);
+  min-height:300px;
 }
 .gw-carousel-viewport:active{cursor:grabbing;}
 
@@ -67,13 +75,13 @@
 
 /* ── Individual sport card ── */
 .gw-sport-card{
-  flex:0 0 72vw;           /* show ~1.35 cards at a time */
-  max-width:280px;
+  flex:0 0 72vw;
+  max-width:300px;
   border-radius:22px;
   overflow:hidden;
   position:relative;
   cursor:pointer;
-  aspect-ratio:.72;        /* portrait, like a phone card */
+  height:100%;             /* fill the viewport-height carousel track */
   box-shadow:0 4px 20px rgba(0,0,0,.18),0 1px 4px rgba(0,0,0,.10);
   transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
   -webkit-tap-highlight-color:transparent;
@@ -87,9 +95,15 @@
 .gw-card-photo{
   position:absolute;inset:0;
   background-size:cover;
-  background-position:center;
+  background-position:center center;
   transition:transform .5s ease;
 }
+/* Per-sport image alignment */
+.gw-card-cricket   .gw-card-photo{background-position:center 40%;}
+.gw-card-football  .gw-card-photo{background-position:center 55%;}
+.gw-card-badminton .gw-card-photo{background-position:center 30%;}
+.gw-card-pickleball .gw-card-photo{background-position:center 45%;}
+.gw-card-chess     .gw-card-photo{background-position:center top;}
 .gw-sport-card:hover .gw-card-photo{transform:scale(1.04);}
 
 /* Gradient overlay — dark bottom, light top */
@@ -188,7 +202,8 @@
 /* ── Dot indicators ── */
 .gw-dots{
   display:flex;align-items:center;justify-content:center;gap:6px;
-  padding:14px 0 6px;
+  padding:14px 0 20px;
+  padding-bottom:calc(20px + env(safe-area-inset-bottom));
 }
 .gw-dot{
   width:6px;height:6px;border-radius:50%;
