@@ -1,0 +1,29 @@
+{
+  "name": "Arena \u2014 Your Squad's Scorebook",
+  "short_name": "Arena",
+  "description": "Track every match, every win, every stat with your squad.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#03060c",
+  "theme_color": "#03060c",
+  "orientation": "portrait",
+  "categories": [
+    "sports",
+    "games"
+  ],
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "prefer_related_applications": false
+}
